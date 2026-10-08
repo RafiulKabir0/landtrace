@@ -1,0 +1,80 @@
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL_UNPOOLED")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Parcel {
+  id              String          @id @default(uuid())
+  parcelNumber    String          @unique
+  khatianNumber   String
+  mouza           String
+  district        String
+  upazila         String
+  totalArea       Float
+  currentOwner    String
+  status          String          @default("ACTIVE")
+  deeds           DeedRecord[]
+  mutations       MutationRecord[]
+  anomalies       FraudAnomaly[]
+  auditLogs       AuditLog[]
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+}
+
+model DeedRecord {
+  id                 String   @id @default(uuid())
+  deedNumber         String   @unique
+  parcelId           String
+  parcel             Parcel   @relation(fields: [parcelId], references: [id], onDelete: Cascade)
+  sellerName         String
+  buyerName          String
+  transferredArea    Float
+  deedDate           DateTime
+  registrationOffice String
+  deedType           String   @default("SALE")
+  serialOrder        Int      @default(1)
+  isVerified         Boolean  @default(false)
+  createdAt          DateTime @default(now())
+}
+
+model MutationRecord {
+  id            String   @id @default(uuid())
+  caseNumber    String   @unique
+  parcelId      String
+  parcel        Parcel   @relation(fields: [parcelId], references: [id], onDelete: Cascade)
+  applicantName String
+  mutatedArea   Float
+  khatianNumber String
+  approvalDate  DateTime
+  officerName   String
+  status        String   @default("APPROVED")
+  createdAt     DateTime @default(now())
+}
+
+model FraudAnomaly {
+  id          String   @id @default(uuid())
+  parcelId    String
+  parcel      Parcel   @relation(fields: [parcelId], references: [id], onDelete: Cascade)
+  anomalyType String
+  severity    String   @default("HIGH")
+  title       String
+  description String
+  evidence    String
+  status      String   @default("OPEN")
+  detectedAt  DateTime @default(now())
+}
+
+model AuditLog {
+  id          String   @id @default(uuid())
+  parcelId    String?
+  parcel      Parcel?  @relation(fields: [parcelId], references: [id], onDelete: SetNull)
+  officerName String
+  action      String
+  details     String
+  timestamp   DateTime @default(now())
+}
