@@ -1,13 +1,12 @@
 import { Suspense } from "react";
 import { prisma } from "@/lib/prisma";
-import LandTraceClient from "./LandTraceClient";
+import LandTraceClient, { Parcel } from "./LandTraceClient";
 
 async function LandTraceContent() {
-  let initialParcels: any[] = [];
-  let dbStatus = "connected";
+  let initialParcels: Parcel[] = [];
 
   try {
-    initialParcels = await prisma.parcel.findMany({
+    const rawParcels = await prisma.parcel.findMany({
       include: {
         deeds: {
           orderBy: { serialOrder: "asc" },
@@ -17,12 +16,12 @@ async function LandTraceContent() {
       },
       orderBy: { createdAt: "desc" },
     });
+    initialParcels = rawParcels as Parcel[];
   } catch (error) {
     console.error("Database query failed:", error);
-    dbStatus = "error";
   }
 
-  return <LandTraceClient initialParcels={initialParcels} initialDbStatus={dbStatus} />;
+  return <LandTraceClient initialParcels={initialParcels} />;
 }
 
 export default function HomePage() {
