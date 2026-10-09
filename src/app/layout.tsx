@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "LandTrace | Automated Title Chain Integrity & Fraud Detection",
+  title: "LandTrace | Land Record Fraud & Double-Selling Detection",
   description:
-    "Next-generation land record fraud detection, chain of custody verification, and double-selling audit system powered by Neon PostgreSQL.",
+    "Automated ownership-chain analysis and fraud detection for Bangladesh land administration. Decision-support system for Assistant Commissioners (Land) and Sub-Registrars.",
   icons: {
     icon: "/favicon.ico",
   },
@@ -29,9 +29,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[#070b14] text-slate-100 antialiased selection:bg-emerald-500/30 selection:text-emerald-200">
+      <body className="min-h-full flex flex-col bg-slate-50 text-slate-900 antialiased selection:bg-teal-500/20 selection:text-teal-900">
         {children}
       </body>
     </html>
