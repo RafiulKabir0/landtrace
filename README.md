@@ -21,7 +21,7 @@ These contradictions tie citizens in decades of civil litigation, overburden lan
 ---
 
 ### Solution
-**LandTrace** introduces an **Ownership Chain Contradiction Detection Engine** that models land records as an immutable directed chain of title. By analyzing topological custody flows from the root survey record (CS / SA / RS / City Survey) down to the latest transfer, LandTrace flags mathematical and logical contradictions in real time, equipping land officers with actionable forensic evidence.
+**LandTrace** introduces an **Ownership Chain Contradiction Detection Engine** that models land records as a directed chain of title. By analyzing topological custody flows from the root survey record (CS / SA / RS / City Survey) down to the latest transfer, LandTrace detects mathematical and logical contradictions on demand, equipping land officers with actionable forensic evidence.
 
 ---
 
@@ -147,7 +147,7 @@ npm run build
 
 The project is connected to Vercel via GitHub:
 - **Repository**: [https://github.com/RafiulKabir0/landtrace](https://github.com/RafiulKabir0/landtrace)
-- **Production URL**: [https://landtrace-rafiul-kabir.vercel.app](https://landtrace-rafiul-kabir.vercel.app)
+- **Production URL**: [https://landtrace.vercel.app](https://landtrace.vercel.app)
 
 Every push to the `main` branch triggers an automated build and deployment on Vercel.
 
@@ -183,5 +183,13 @@ This project was developed with the assistance of **Google Antigravity (Gemini)*
 
 ---
 
-### Team
-**LandTrace** — LandTech 2026 Hackathon
+### Team & Mentor Details
+- **Project**: LandTrace
+- **Problem Category**: P3 — Fraud & Double-Selling Detection
+- **Hackathon**: LandTech 2026
+- **Team**: Team LandTrace
+- **Lead Developer**: Rafiul Kabir ([@RafiulKabir0](https://github.com/RafiulKabir0))
+- **Mentor**: None assigned / Self-directed (Independent submission)
+- **Live Production URL**: [https://landtrace.vercel.app](https://landtrace.vercel.app)
+- **Repository**: [https://github.com/RafiulKabir0/landtrace](https://github.com/RafiulKabir0/landtrace)
+

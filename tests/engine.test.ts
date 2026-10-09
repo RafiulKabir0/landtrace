@@ -90,7 +90,7 @@ describe("LandTrace P3 Fraud Detection Engine Tests", () => {
       },
     ];
 
-    const anomalies = detectDoubleSelling(deeds, 12.0);
+    const anomalies = detectDoubleSelling(deeds);
     assert.equal(anomalies.length, 1);
     assert.equal(anomalies[0].anomalyType, "DOUBLE_SELLING");
     assert.equal(anomalies[0].severity, "CRITICAL");

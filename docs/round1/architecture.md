@@ -97,7 +97,7 @@ erDiagram
 
 ### 3. Detection Engine Algorithmic Complexity
 
-The detection engine (`src/lib/detection-engine.ts`) runs in polynomial time suitable for real-time validation:
+The detection engine (`src/lib/detection-engine.ts`) runs in polynomial time suitable for sub-second on-demand validation:
 - **Double Selling**: $O(D \log D)$ sorting by deed execution date followed by sequential seller interest tracking.
 - **Chain Break Verification**: $O(D)$ directed traversal over grantor/grantee legitimacy sets.
 - **Area Conservation**: $O(D)$ cumulative summation and threshold bounding against parent khatian survey acreage.
@@ -111,4 +111,4 @@ The detection engine (`src/lib/detection-engine.ts`) runs in polynomial time sui
 - **Code Repository**: GitHub (`RafiulKabir0/landtrace`)
 - **Hosting Platform**: Vercel Serverless Platform
 - **CI/CD Mechanism**: Git push to `main` automatically triggers production builds, static page pre-rendering, and asset distribution across Edge CDN nodes.
-- **Production URL**: `https://landtrace-rafiul-kabir.vercel.app`
+- **Production URL**: `https://landtrace.vercel.app`

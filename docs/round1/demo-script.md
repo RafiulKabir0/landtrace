@@ -6,14 +6,14 @@
 ### Segment 1: Introduction & Login (0:00 – 0:25)
 - **Visual**: Show the LandTrace landing dashboard with the official government header banner, AC-Land badge, and Neon PostgreSQL live connection chip.
 - **Narrator**:
-  > *"Welcome to LandTrace — an automated Ownership Chain Contradiction and Fraud Detection System built for LandTech 2026 Problem Statement P3. Land disputes account for over 70% of civil litigation in Bangladesh, largely due to double-selling, phantom grantors, and deed-mutation discrepancies. Today, we demonstrate how LandTrace provides Assistant Commissioners (Land) and Sub-Registrars with an automated decision-support engine. Notice that our interface defaults to Bangla, aligning with administrative field terms, with an instant English toggle. All data displayed is 100% synthetic demonstration data."*
+  > *"Welcome to LandTrace — an automated Ownership Chain Contradiction and Fraud Detection System built for LandTech 2026 Problem Statement P3. Land title contradictions and fraudulent conveyances are among the greatest drivers of protracted civil litigation in Bangladesh, largely due to double-selling, phantom grantors, and deed-mutation discrepancies. Today, we demonstrate how LandTrace provides Assistant Commissioners (Land) and Sub-Registrars with an automated decision-support engine. Notice that our interface defaults to Bangla, aligning with administrative field terms, with an instant English toggle. All data displayed is 100% synthetic demonstration data."*
 
 ---
 
 ### Segment 2: Dashboard Overview & Plot Search (0:25 – 0:50)
 - **Visual**: Show summary statistics (7 Audited Land Parcels, Clean Custody Chains, Active Anomalies, Contested Decimals). Type in the search box: `PLOT-DH-2045` (Gulshan, Dhaka).
 - **Narrator**:
-  > *"On the officer dashboard, we see real-time metrics pulled directly from our Neon serverless PostgreSQL database. Let's inspect parcel PLOT-DH-2045 in Gulshan. As we filter, the registry dynamically highlights the plot with a compromised title status."*
+  > *"On the officer dashboard, we see live metrics pulled directly from our Neon serverless PostgreSQL database. Let's inspect parcel PLOT-DH-2045 in Gulshan. As we filter, the registry dynamically highlights the plot with a compromised title status."*
 
 ---
 
@@ -27,7 +27,7 @@
 ### Segment 4: Forensic Evidence & Deed Chronology Timeline (1:20 – 1:45)
 - **Visual**: Scroll down through the Deed Timeline, pointing out the red flashing node on deed DEED-2021-3948, and inspect the JSON evidence payload.
 - **Narrator**:
-  > *"In the Deed Timeline, LandTrace contrasts the verified node with the compromised node. The Forensic Evidence box highlights both deed serials, dates, and the unverified alienation. The officer can instantly review the evidence and click 'Send for Field Inquiry' or 'Mark for Review', recording the action into an immutable audit trail."*
+  > *"In the Deed Timeline, LandTrace contrasts the verified node with the compromised node. The Forensic Evidence box highlights both deed serials, dates, and the unverified alienation. The officer can instantly review the evidence and click 'Send for Field Inquiry' or 'Mark for Review', recording the action into a persistent audit log."*
 
 ---
 
@@ -41,4 +41,4 @@
 ### Segment 6: Clean Case Comparison & Closing (2:10 – 2:30)
 - **Visual**: Switch back to the dashboard. Select `PLOT-DH-1001` (Tejgaon, Dhaka). Show Risk Score **0/100 (Clean)**, green verified nodes from 2005 grant down to 2016 namjari mutation.
 - **Narrator**:
-  > *"Conversely, on legitimate parcel PLOT-DH-1001, LandTrace confirms a 100% verified custody chain with perfect area alignment and namjari clearance. By bridging Sub-Registry deeds with AC-Land mutations, LandTrace creates a transparent, tamper-evident foundation for digital land administration in Bangladesh. Thank you."*
+  > *"Conversely, on legitimate parcel PLOT-DH-1001, LandTrace confirms a 100% verified custody chain with perfect area alignment and namjari clearance. By bridging Sub-Registry deeds with AC-Land mutations, LandTrace creates an auditable, transparent foundation for digital land administration in Bangladesh. Thank you."*

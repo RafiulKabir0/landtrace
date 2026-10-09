@@ -66,7 +66,7 @@ async function main() {
   });
 
   // 2. Double Selling Anomaly: PLOT-DH-2045 (Gulshan, Dhaka)
-  const parcel2 = await prisma.parcel.create({
+  await prisma.parcel.create({
     data: {
       parcelNumber: "PLOT-DH-2045",
       khatianNumber: "KH-1102-SA",
@@ -124,7 +124,7 @@ async function main() {
   });
 
   // 3. Ownership Chain Break: PLOT-SYL-5501 (Sylhet Sadar)
-  const parcel3 = await prisma.parcel.create({
+  await prisma.parcel.create({
     data: {
       parcelNumber: "PLOT-SYL-5501",
       khatianNumber: "KH-3319-RS",
@@ -182,7 +182,7 @@ async function main() {
   });
 
   // 4. Area Mismatch Anomaly: PLOT-CTG-3301 (Pahartali, Chattogram)
-  const parcel4 = await prisma.parcel.create({
+  await prisma.parcel.create({
     data: {
       parcelNumber: "PLOT-CTG-3301",
       khatianNumber: "KH-9844-RS",
@@ -229,7 +229,7 @@ async function main() {
   });
 
   // 5. Deed-Mutation Mismatch Anomaly: PLOT-RAJ-4402 (Boalia, Rajshahi)
-  const parcel5 = await prisma.parcel.create({
+  await prisma.parcel.create({
     data: {
       parcelNumber: "PLOT-RAJ-4402",
       khatianNumber: "KH-6102-CS",
@@ -288,7 +288,7 @@ async function main() {
   });
 
   // 6. Suspicious Rapid Transfer / Timing Anomaly: PLOT-KHL-6610 (Khulna)
-  const parcel6 = await prisma.parcel.create({
+  await prisma.parcel.create({
     data: {
       parcelNumber: "PLOT-KHL-6610",
       khatianNumber: "KH-7711-SA",
@@ -345,7 +345,7 @@ async function main() {
   });
 
   // 7. Multiple Simultaneous Contradictions: PLOT-BAR-7703 (Barishal)
-  const parcel7 = await prisma.parcel.create({
+  await prisma.parcel.create({
     data: {
       parcelNumber: "PLOT-BAR-7703",
       khatianNumber: "KH-8800-RS",

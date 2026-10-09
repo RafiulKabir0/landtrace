@@ -89,7 +89,7 @@ export function normalizeName(name: string): string {
  * Rule 1: Double Selling Detection
  * Detects if a seller sold the same interest to multiple buyers without legitimate title re-acquisition.
  */
-export function detectDoubleSelling(deeds: DeedRecord[], _totalArea?: number): DetectionAnomaly[] {
+export function detectDoubleSelling(deeds: DeedRecord[]): DetectionAnomaly[] {
   const anomalies: DetectionAnomaly[] = [];
   const sortedDeeds = [...deeds].sort(
     (a, b) => new Date(a.deedDate).getTime() - new Date(b.deedDate).getTime()
@@ -343,7 +343,7 @@ export function detectTimingAnomalies(deeds: DeedRecord[]): DetectionAnomaly[] {
  */
 export function auditParcel(parcel: ParcelRecord): AuditResult {
   const anomalies: DetectionAnomaly[] = [
-    ...detectDoubleSelling(parcel.deeds, parcel.totalArea),
+    ...detectDoubleSelling(parcel.deeds),
     ...detectChainBreaks(parcel.deeds),
     ...detectAreaMismatch(parcel.deeds, parcel.totalArea),
     ...detectDeedMutationMismatch(parcel.deeds, parcel.mutations),

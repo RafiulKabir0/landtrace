@@ -36,7 +36,7 @@
 - [x] **Architecture Documentation**: Detailed component and ER diagram in `architecture.md`.
 - [x] **Countrywide Implementation Plan**: Covered in Concept Note Section 10.
 - [x] **ONE Vercel Project**: `landtrace` on Vercel.
-- [x] **ONE Stable Production URL**: `https://landtrace-rafiul-kabir.vercel.app`.
+- [x] **ONE Stable Production URL**: `https://landtrace.vercel.app`.
 - [x] **ONE Neon Project/Database**: Provisioned serverless PostgreSQL on Neon.
 - [x] **GitHub → Vercel Automatic Deployment**: Live on every git push to `main`.
 - [x] **Production URL Verified**: Live and returning dynamic database records.

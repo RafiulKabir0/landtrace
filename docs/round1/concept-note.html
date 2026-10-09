@@ -7,24 +7,41 @@
   <style>
     @page {
       size: A4;
-      margin: 18mm 18mm 18mm 18mm;
+      margin: 14mm 16mm 14mm 16mm;
+    }
+    * {
+      box-sizing: border-box;
     }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       color: #1e293b;
-      line-height: 1.5;
-      font-size: 11pt;
+      line-height: 1.45;
+      font-size: 9.5pt;
       margin: 0;
-      padding: 20px;
+      padding: 0;
       background: #ffffff;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
     }
-    .page-break {
+    .page {
+      height: 268mm;
+      max-height: 268mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
       page-break-after: always;
+      overflow: hidden;
+    }
+    .page:last-child {
+      page-break-after: avoid;
+    }
+    .page-content {
+      flex: 1;
     }
     .header {
       border-bottom: 2px solid #0f766e;
-      padding-bottom: 8px;
-      margin-bottom: 16px;
+      padding-bottom: 6px;
+      margin-bottom: 12px;
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
@@ -32,303 +49,397 @@
     .header h1 {
       margin: 0;
       color: #0f766e;
-      font-size: 20pt;
+      font-size: 19pt;
       font-weight: 800;
+      letter-spacing: -0.5px;
     }
     .header .subtitle {
-      font-size: 10pt;
-      color: #64748b;
+      font-size: 9.5pt;
+      color: #475569;
       font-weight: 600;
+      margin-top: 2px;
+    }
+    .badge {
+      display: inline-block;
+      background: #ccfbf1;
+      color: #0f766e;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-size: 8.5pt;
+      font-weight: 700;
     }
     h2 {
       color: #0f766e;
-      font-size: 13pt;
-      margin-top: 14px;
-      margin-bottom: 6px;
-      border-left: 4px solid #14b8a6;
-      padding-left: 8px;
-    }
-    p, li {
-      font-size: 9.8pt;
-      color: #334155;
-      margin-top: 3px;
+      font-size: 11.5pt;
+      margin-top: 11px;
       margin-bottom: 5px;
+      border-left: 3.5px solid #14b8a6;
+      padding-left: 7px;
+      font-weight: 700;
+    }
+    p {
+      font-size: 9pt;
+      color: #334155;
+      margin-top: 2px;
+      margin-bottom: 5px;
+      text-align: justify;
+    }
+    ul {
+      margin-top: 3px;
+      margin-bottom: 6px;
+      padding-left: 18px;
+    }
+    li {
+      font-size: 8.8pt;
+      color: #334155;
+      margin-top: 2px;
+      margin-bottom: 3px;
+      line-height: 1.4;
     }
     table {
       width: 100%;
       border-collapse: collapse;
-      margin: 10px 0;
-      font-size: 8.8pt;
+      margin: 7px 0;
+      font-size: 8.4pt;
     }
     th, td {
       border: 1px solid #cbd5e1;
-      padding: 6px 8px;
+      padding: 5px 7px;
       text-align: left;
+      vertical-align: top;
     }
     th {
       background: #f1f5f9;
       color: #0f172a;
       font-weight: 700;
     }
-    .badge {
-      display: inline-block;
-      background: #ccfbf1;
+    code {
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 8pt;
+      background: #f1f5f9;
+      padding: 1px 3px;
+      border-radius: 3px;
       color: #0f766e;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 8.5pt;
-      font-weight: 600;
     }
     .diagram-box {
       background: #f8fafc;
       border: 1px solid #e2e8f0;
-      border-radius: 6px;
-      padding: 8px 12px;
-      font-family: monospace;
-      font-size: 8.5pt;
+      border-radius: 5px;
+      padding: 7px 10px;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 7.8pt;
       line-height: 1.35;
       color: #0f172a;
-      margin: 8px 0;
+      margin: 6px 0;
+      white-space: pre;
+    }
+    .callout-box {
+      background: #f0fdfa;
+      border: 1px solid #99f6e4;
+      border-radius: 5px;
+      padding: 6px 9px;
+      margin: 6px 0;
+      font-size: 8.5pt;
+      color: #115e59;
     }
     .footer {
-      margin-top: 20px;
       border-top: 1px solid #e2e8f0;
-      padding-top: 8px;
-      font-size: 8pt;
-      color: #94a3b8;
+      padding-top: 6px;
+      font-size: 7.8pt;
+      color: #64748b;
       display: flex;
       justify-content: space-between;
+      margin-top: auto;
     }
   </style>
 </head>
 <body>
 
-  <!-- PAGE 1 -->
-  <div class="header">
-    <div>
-      <h1>LandTrace</h1>
-      <div class="subtitle">Automated Land Record Fraud Detection & Title Chain Integrity System</div>
-    </div>
-    <div style="text-align: right;">
-      <span class="badge">LandTech 2026</span><br>
-      <span style="font-size: 9pt; color: #64748b; font-weight: 600;">Problem P3</span>
-    </div>
-  </div>
+  <!-- ==================== PAGE 1 ==================== -->
+  <div class="page">
+    <div class="page-content">
+      <div class="header">
+        <div>
+          <h1>LandTrace</h1>
+          <div class="subtitle">Automated Land Record Fraud Detection & Title Chain Integrity System</div>
+        </div>
+        <div style="text-align: right;">
+          <span class="badge">LandTech 2026</span><br>
+          <span style="font-size: 8.5pt; color: #64748b; font-weight: 600;">Problem P3</span>
+        </div>
+      </div>
 
-  <h2>1. Selected Problem Statement</h2>
-  <p><strong>P3: Fraud & Double-Selling Detection</strong></p>
-  <p>To eliminate land title fraud, illegal resale, and record contradictions in Bangladesh by implementing an automated Ownership Chain Contradiction Detection Engine capable of analyzing historical custody chains and ongoing transaction proposals.</p>
+      <h2>1. Selected Problem Statement</h2>
+      <p><strong>P3: Fraud & Double-Selling Detection</strong></p>
+      <p>LandTrace addresses land title fraud, unauthorized resale, and cross-registry record contradictions in Bangladesh by implementing an automated Ownership Chain Contradiction Detection Engine capable of analyzing historical custody chains and evaluating ongoing transaction proposals on demand.</p>
 
-  <h2>2. Bangladesh Context</h2>
-  <p>Land governance in Bangladesh is divided between two disparate governmental institutions: the <em>Directorate of Registration</em> (responsible for deed registration under the Ministry of Law) and the <em>Upazila Land Offices / Assistant Commissioner (Land)</em> (responsible for survey records and mutation/namjari under the Ministry of Land). Because these archives traditionally lacked real-time cross-verification, opportunistic syndicates exploit procedural lag to register unauthorized deeds and initiate conflicting mutations.</p>
+      <h2>2. Bangladesh Context & Administrative Background</h2>
+      <p>Land governance in Bangladesh operates through a dual-channel administrative architecture divided across two separate ministries:</p>
+      <ul>
+        <li><strong>Deed Registration:</strong> Administered by the Directorate of Registration under the Ministry of Law, Justice and Parliamentary Affairs through Upazila Sub-Registry offices, governing the execution and archiving of registered deeds (দলিল).</li>
+        <li><strong>Record of Rights & Mutation (নামজারি / খতিয়ান):</strong> Administered by Upazila Land Offices under the Ministry of Land, led by Assistant Commissioners (Land), governing cadastral survey records (CS, SA, RS, BS/City Survey) and mutation khatians.</li>
+      </ul>
+      <p>Because Sub-Registry deed archives and AC (Land) mutation records historically functioned in administrative silos without automated cross-verification, opportunistic syndicates exploit procedural lag between deed registration and mutation approval to execute unauthorized transactions.</p>
 
-  <h2>3. Problem Analysis</h2>
-  <ul>
-    <li><strong>Double Selling:</strong> Predatory resale of already transferred land to secondary buyers before the primary buyer's namjari is completed.</li>
-    <li><strong>Ownership Chain Breaks:</strong> Execution of transfer deeds by fictitious or unverified grantors lacking legitimate predecessor titles.</li>
-    <li><strong>Area Inflation & Mismatches:</strong> Transfer deeds stipulating acreage exceeding the parent cadastral survey khatian (CS, SA, RS, BS/City Survey).</li>
-    <li><strong>Deed-Mutation Discrepancies:</strong> Mutations granted for acreage or applicants inconsistent with registered deeds.</li>
-    <li><strong>Judicial Burden:</strong> Over 70% of pending civil litigation cases in Bangladesh courts originate directly from conflicting land records.</li>
-  </ul>
+      <h2>3. Problem Analysis</h2>
+      <p>The absence of automated title custody cross-verification enables recurring fraud patterns in land transfers:</p>
+      <ul>
+        <li><strong>Double Selling (দ্বৈত বিক্রয়):</strong> Predatory conveyance of previously alienated land to secondary buyers before the primary buyer completes the mutation process.</li>
+        <li><strong>Ownership Chain Breaks (ধারাবাহিকতা বিচ্ছিন্ন):</strong> Deeds executed by unverified or fictitious grantors who possess no legitimate predecessor title in the recorded chain of custody.</li>
+        <li><strong>Area Inflation & Mismatches (পরিমাপের অসঙ্গতি):</strong> Transfer deeds stipulating acreage that exceeds the parent cadastral survey khatian boundary or cumulative plot shares.</li>
+        <li><strong>Deed–Mutation Discrepancies (দলিল-নামজারি অমিল):</strong> Mutations sanctioned for acreage or applicants inconsistent with underlying registered deeds.</li>
+        <li><strong>Judicial Backlog:</strong> Land title contradictions and fraudulent conveyances constitute a predominant driver of protracted civil litigation and tribunal case backlogs across Bangladesh.</li>
+      </ul>
 
-  <h2>4. Proposed Solution: LandTrace</h2>
-  <p><strong>LandTrace</strong> is an automated Decision-Support System (DSS) tailored for Sub-Registrars and Assistant Commissioners (Land). It models land holdings as directed title graphs, verifying mathematical, spatial, and chronological integrity across five core fraud vectors in real time.</p>
+      <h2>4. Proposed Solution: LandTrace</h2>
+      <p><strong>LandTrace</strong> is an automated <strong>Decision-Support System (DSS)</strong> designed for Sub-Registrars and Assistant Commissioners (Land). Instead of evaluating land records as disconnected paper entries, LandTrace models land holdings as directed title custody graphs, evaluating mathematical, spatial, and chronological integrity across five core fraud vectors on demand.</p>
 
-  <div class="diagram-box">
+      <div class="diagram-box">
 Land Records (Deeds & Khatians) ➔ Data Normalization ➔ Directed Ownership Chain Engine
-     ➔ Five-Vector Contradiction Audit ➔ Risk Scoring (0-100) ➔ Officer Decision Support
-  </div>
+     ➔ Five-Vector Contradiction Audit ➔ Risk Scoring (0–100) ➔ Officer Decision Support
+      </div>
 
-  <div class="footer">
-    <span>LandTrace — LandTech 2026 Concept Note</span>
-    <span>Page 1 of 4</span>
-  </div>
-
-  <div class="page-break"></div>
-
-  <!-- PAGE 2 -->
-  <div class="header">
-    <div>
-      <h1 style="font-size: 16pt;">LandTrace — Technical Architecture</h1>
+      <div class="callout-box">
+        <strong>Decision-Support Distinction:</strong> LandTrace equips land officers with structured forensic discrepancy findings; it does not adjudicate legal ownership or replace judicial authority.
+      </div>
     </div>
-    <span class="badge">P3 Concept Note</span>
-  </div>
 
-  <h2>5. System Architecture</h2>
-  <p>LandTrace operates as an integrated microservices-ready web platform deployed on scalable serverless cloud infrastructure:</p>
-  <ul>
-    <li><strong>Presentation Layer:</strong> Bilingual administrative portal (বাংলা default / English) built with Next.js 16 App Router and Tailwind CSS.</li>
-    <li><strong>Application & API Layer:</strong> Server Components and route handlers executing the topological graph verification engine.</li>
-    <li><strong>Data Persistence Layer:</strong> Neon Serverless PostgreSQL with SSL pooling, managed by Prisma 6 ORM.</li>
-    <li><strong>Continuous Deployment:</strong> Git-driven automated pipeline via GitHub and Vercel.</li>
-  </ul>
-
-  <h2>6. Technology Stack</h2>
-  <table>
-    <tr>
-      <th>Layer</th>
-      <th>Technologies</th>
-      <th>Role in Architecture</th>
-    </tr>
-    <tr>
-      <td><strong>Frontend</strong></td>
-      <td>Next.js 16, React 19, Tailwind CSS v4</td>
-      <td>Bilingual officer portal, interactive timelines, print dossiers</td>
-    </tr>
-    <tr>
-      <td><strong>Logic & Engine</strong></td>
-      <td>TypeScript 5, Node Test Runner</td>
-      <td>Pure functional graph analysis and contradiction algorithms</td>
-    </tr>
-    <tr>
-      <td><strong>Database</strong></td>
-      <td>PostgreSQL 16 on Neon, Prisma ORM</td>
-      <td>Structured cadastral parcels, deeds, mutations, and audit logs</td>
-    </tr>
-    <tr>
-      <td><strong>Hosting & CI/CD</strong></td>
-      <td>Vercel, GitHub Actions</td>
-      <td>Automated zero-downtime production deployment</td>
-    </tr>
-  </table>
-
-  <h2>7. Key System Features</h2>
-  <ul>
-    <li><strong>Bilingual Officer Portal:</strong> Default বাংলা language designed to align with government terminologies (খতিয়ান, দাগ, মৌজা, নামজারি).</li>
-    <li><strong>Interactive Title Timeline:</strong> Visual chronological map of all transfers from initial grant to current claimant.</li>
-    <li><strong>Pre-Registration Risk Check:</strong> Decision-support audit tool allowing Sub-Registrars to test proposed transfers before execution.</li>
-    <li><strong>Forensic Evidentiary Dossier:</strong> Detailed discrepancy breakdown including affected parties, deed numbers, and exact decimal variances.</li>
-    <li><strong>Immutable Officer Action Trail:</strong> Action logging for reviewing records, requesting field inquiries, and adding notes.</li>
-  </ul>
-
-  <div class="footer">
-    <span>LandTrace — LandTech 2026 Concept Note</span>
-    <span>Page 2 of 4</span>
-  </div>
-
-  <div class="page-break"></div>
-
-  <!-- PAGE 3 -->
-  <div class="header">
-    <div>
-      <h1 style="font-size: 16pt;">LandTrace — Five Detection Capabilities</h1>
+    <div class="footer">
+      <span>LandTrace — LandTech 2026 Concept Note (Problem P3)</span>
+      <span>Page 1 of 4</span>
     </div>
-    <span class="badge">P3 Concept Note</span>
   </div>
 
-  <h2>8. Five Core Detection Capabilities</h2>
+  <!-- ==================== PAGE 2 ==================== -->
+  <div class="page">
+    <div class="page-content">
+      <div class="header">
+        <div>
+          <h1 style="font-size: 16pt;">LandTrace — Technical Architecture</h1>
+          <div class="subtitle">Modular Full-Stack Architecture & Analytical Capabilities</div>
+        </div>
+        <span class="badge">P3 Concept Note</span>
+      </div>
 
-  <table>
-    <thead>
-      <tr>
-        <th style="width: 28%;">Capability</th>
-        <th style="width: 44%;">Detection Logic & Mathematical Trigger</th>
-        <th style="width: 28%;">Administrative Impact</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><strong>1. Double Selling<br>(দ্বৈত বিক্রয়)</strong></td>
-        <td>Flags instances where Seller S transfers land to Buyer A, and subsequently executes deed to Buyer B without documented re-acquisition: <code>Date(Sale B) > Date(Sale A) ∧ Title(S) == 0</code></td>
-        <td>Prevents unauthorized secondary conveyances of sold parcels.</td>
-      </tr>
-      <tr>
-        <td><strong>2. Chain Break<br>(ধারাবাহিকতা বিচ্ছিন্ন)</strong></td>
-        <td>Flags deeds where Grantor G in deed N does not appear as a Grantee in deed N-1, parent khatian, or inheritance record: <code>G ∉ ValidGranteeSet(N-1)</code></td>
-        <td>Stops fraudulent conveyances executed by phantom or impersonated grantors.</td>
-      </tr>
-      <tr>
-        <td><strong>3. Area Mismatch<br>(পরিমাপের গরমিল)</strong></td>
-        <td>Flags conveyances where deed acreage exceeds the parent cadastral khatian area or cumulative active shares: <code>Area(Deed) > Area(Khatian)</code></td>
-        <td>Eliminates artificial acreage inflation and boundary encroachments.</td>
-      </tr>
-      <tr>
-        <td><strong>4. Deed–Mutation Mismatch<br>(দলিল-নামজারি অমিল)</strong></td>
-        <td>Cross-validates AC-Land namjari records against sub-registry deeds for area discrepancies (<code>|Area(Mut) - Area(Deed)| > 0.05</code>) or missing deeds.</td>
-        <td>Ensures mutated records strictly conform to legitimate registered deeds.</td>
-      </tr>
-      <tr>
-        <td><strong>5. Wrong Timing / Rapid Flip<br>(সময়ানুক্রমিক অসঙ্গতি)</strong></td>
-        <td>Detects impossible chronology (<code>Date(Sale) < Date(Acquisition)</code>) or rapid speculative flipping (<code>Interval < 7 days</code>) without interim namjari.</td>
-        <td>Flags backdated fraudulent deeds and rapid speculative syndicate activity.</td>
-      </tr>
-    </tbody>
-  </table>
+      <h2>5. System Architecture</h2>
+      <p>LandTrace operates as a modular full-stack web application with decoupled engine services, deployed on serverless cloud infrastructure:</p>
+      <ul>
+        <li><strong>Presentation Layer:</strong> Bilingual administrative portal (বাংলা default / English) built with Next.js 16 App Router and Tailwind CSS v4, optimized for officer workflows.</li>
+        <li><strong>Application & Logic Layer:</strong> Server Components and route handlers executing a pure TypeScript topological contradiction engine with sub-second on-demand evaluation.</li>
+        <li><strong>Data Persistence Layer:</strong> Neon Serverless PostgreSQL 16 with SSL pooling, managed by Prisma 6 ORM for structured parcel, deed, mutation, and audit records.</li>
+        <li><strong>Deployment Pipeline:</strong> Continuous integration and deployment via GitHub and Vercel with automated test gates.</li>
+      </ul>
 
-  <h2>9. Synthetic Data & Ethical Compliance</h2>
-  <p>In accordance with hackathon guidelines, LandTrace operates strictly on <strong>synthetic demonstration data</strong>:</p>
-  <ul>
-    <li><strong>Zero Real Citizen Data:</strong> All names, khatian numbers, and plot coordinates are fictional test cases.</li>
-    <li><strong>Ethical Boundary:</strong> No live government portal is scraped, and no production state database is accessed.</li>
-    <li><strong>Benchmark Coverage:</strong> Seven deterministic test parcels demonstrate valid chains and every permutation of fraud.</li>
-  </ul>
+      <h2>6. Technology Stack</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 22%;">Layer</th>
+            <th style="width: 38%;">Technologies</th>
+            <th style="width: 40%;">Role in Architecture</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Frontend</strong></td>
+            <td>Next.js 16, React 19, Tailwind CSS v4</td>
+            <td>Bilingual officer portal, interactive timelines, printable dossiers</td>
+          </tr>
+          <tr>
+            <td><strong>Logic & Engine</strong></td>
+            <td>TypeScript 5, Node Test Runner</td>
+            <td>Topological custody graph analysis and contradiction algorithms</td>
+          </tr>
+          <tr>
+            <td><strong>Database</strong></td>
+            <td>PostgreSQL 16 on Neon, Prisma 6 ORM</td>
+            <td>Cadastral parcels, deeds, mutations, and persistent audit logs</td>
+          </tr>
+          <tr>
+            <td><strong>Hosting & CI/CD</strong></td>
+            <td>Vercel Serverless, GitHub Actions</td>
+            <td>Automated zero-downtime production deployment on git push</td>
+          </tr>
+        </tbody>
+      </table>
 
-  <div class="footer">
-    <span>LandTrace — LandTech 2026 Concept Note</span>
-    <span>Page 3 of 4</span>
-  </div>
+      <h2>7. Key System Features</h2>
+      <ul>
+        <li><strong>Bilingual Administrative Portal:</strong> Default বাংলা language aligned with official government land terminology (খতিয়ান, দাগ, মৌজা, নামজারি) with instant English toggle.</li>
+        <li><strong>Interactive Title Timeline:</strong> Chronological visual mapping of transfers from root survey grant down to current claimant with verification badges.</li>
+        <li><strong>Pre-Registration Risk Check:</strong> Interactive decision-support simulation tool allowing Sub-Registrars to audit proposed deeds before execution.</li>
+        <li><strong>Forensic Evidentiary Dossier:</strong> Structured discrepancy breakdown citing conflicting deed serials, parties, execution dates, and decimal variances.</li>
+        <li><strong>Persistent Officer Action Trail:</strong> Action logging tracking record reviews, field inquiry dispatches, and administrative inspection notes.</li>
+      </ul>
 
-  <div class="page-break"></div>
-
-  <!-- PAGE 4 -->
-  <div class="header">
-    <div>
-      <h1 style="font-size: 16pt;">LandTrace — Implementation & Governance</h1>
+      <div class="diagram-box">
+Officer Web App (Bilingual: বাংলা | English)
+     ↓
+Next.js App Router API & Server Components
+     ↓
+Ownership Chain Contradiction Engine (Pure TypeScript)
+     ↓
+PostgreSQL on Neon Serverless (Prisma 6 Client)
+     ↓
+Calibrated Risk Score (0–100) + Forensic Evidence Dossier
+      </div>
     </div>
-    <span class="badge">P3 Concept Note</span>
+
+    <div class="footer">
+      <span>LandTrace — LandTech 2026 Concept Note (Problem P3)</span>
+      <span>Page 2 of 4</span>
+    </div>
   </div>
 
-  <h2>10. Countrywide Implementation Roadmap</h2>
-  <div class="diagram-box">
-Phase 1 (Months 1–4): Pilot in 2 Upazilas (Tejgaon & Sylhet Sadar) in parallel with e-Mutation.
-Phase 2 (Months 5–10): Divisional Integration with Land Commissionerate APIs and officer training.
-Phase 3 (Months 11–18): Nationwide rollout across all 64 districts with centralized Ministry oversight.
+  <!-- ==================== PAGE 3 ==================== -->
+  <div class="page">
+    <div class="page-content">
+      <div class="header">
+        <div>
+          <h1 style="font-size: 16pt;">LandTrace — Five Detection Capabilities</h1>
+          <div class="subtitle">Algorithmic Rules, Mathematical Conditions & Administrative Value</div>
+        </div>
+        <span class="badge">P3 Concept Note</span>
+      </div>
+
+      <h2>8. Five Core Detection Capabilities</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 26%;">Capability</th>
+            <th style="width: 44%;">Detection Logic & Mathematical Trigger</th>
+            <th style="width: 30%;">Administrative Impact</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1. Double Selling<br>(দ্বৈত বিক্রয়)</strong></td>
+            <td>Flags instances where Seller S transfers land to Buyer A, and subsequently executes deed to Buyer B without documented intervening re-acquisition:<br><code>Date(Sale B) > Date(Sale A) ∧ Title(S) == 0</code></td>
+            <td>Prevents unauthorized secondary conveyances of sold parcels before mutation.</td>
+          </tr>
+          <tr>
+            <td><strong>2. Chain Break<br>(ধারাবাহিকতা বিচ্ছিন্ন)</strong></td>
+            <td>Flags deeds where Grantor G in deed N does not appear as a legitimate Grantee in preceding deed N-1, parent khatian, or inheritance record:<br><code>G ∉ ValidGranteeSet(N-1)</code></td>
+            <td>Stops fraudulent conveyances executed by unverified or phantom grantors.</td>
+          </tr>
+          <tr>
+            <td><strong>3. Area Mismatch<br>(পরিমাপের গরমিল)</strong></td>
+            <td>Flags conveyances where deed acreage exceeds the parent cadastral survey khatian acreage or cumulative plot shares:<br><code>Area(Deed) > Area(Khatian)</code></td>
+            <td>Eliminates artificial acreage inflation and boundary encroachments.</td>
+          </tr>
+          <tr>
+            <td><strong>4. Deed–Mutation Mismatch<br>(দলিল-নামজারি অমিল)</strong></td>
+            <td>Cross-validates AC-Land namjari records against sub-registry deeds for area discrepancies (<code>|Area(Mut) - Area(Deed)| > 0.05</code>) or applicants without registered deeds.</td>
+            <td>Ensures mutated records strictly conform to legitimate registered acquisition deeds.</td>
+          </tr>
+          <tr>
+            <td><strong>5. Wrong Timing / Rapid Flip<br>(সময়ানুক্রমিক অসঙ্গতি)</strong></td>
+            <td>Detects anachronistic deeds (<code>Date(Sale) < Date(Acquisition)</code>) or rapid speculative flipping (<code>Interval < 7 days</code>) without interim namjari clearance.</td>
+            <td>Flags backdated fraudulent deeds and rapid speculative syndicate activity.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>9. Prototype Implementation vs. Future Integration</h2>
+      <div class="callout-box">
+        <strong>Current Implementation (Round 1 Prototype):</strong> LandTrace currently operates as an independent decision-support prototype evaluating deterministic synthetic datasets across 7 benchmark parcels. It does not connect to live government systems, does not scrape public websites, and stores no real citizen records or PII.
+      </div>
+
+      <p style="margin-top: 6px;"><strong>Benchmark Dataset Coverage (Deterministic Synthetic Data):</strong></p>
+      <ul>
+        <li><code>PLOT-DH-1001</code> (Tejgaon, Dhaka): Fully verified 100% clean title custody chain (0 anomalies, CLEAN status).</li>
+        <li><code>PLOT-DH-2045</code> (Gulshan, Dhaka): Critical double-selling anomaly (unauthorized resale to second buyer).</li>
+        <li><code>PLOT-SYL-5501</code> (Sylhet Sadar): Critical chain break anomaly (phantom grantor absent from chain of title).</li>
+        <li><code>PLOT-CTG-3301</code> (Pahartali, Chattogram): High area mismatch anomaly (transferred acreage exceeds khatian).</li>
+        <li><code>PLOT-RAJ-4402</code> (Boalia, Rajshahi): High deed-mutation discrepancy (mutated area exceeds registered deed).</li>
+        <li><code>PLOT-KHL-6610</code> (Khalishpur, Khulna): Medium timing anomaly (rapid 48-hour resale without namjari).</li>
+        <li><code>PLOT-BAR-7703</code> (Barishal Sadar): Critical multi-contradiction composite benchmark (simultaneous violations).</li>
+      </ul>
+    </div>
+
+    <div class="footer">
+      <span>LandTrace — LandTech 2026 Concept Note (Problem P3)</span>
+      <span>Page 3 of 4</span>
+    </div>
   </div>
 
-  <h2>11. Legal & Regulatory Boundary</h2>
-  <p><strong>Decision-Support Notice:</strong> LandTrace is designed as an analytical decision-support tool for land officers. It does not issue judicial decrees, adjudicate legal ownership, or replace the statutory authority of Land Tribunals and Assistant Commissioners (Land).</p>
+  <!-- ==================== PAGE 4 ==================== -->
+  <div class="page">
+    <div class="page-content">
+      <div class="header">
+        <div>
+          <h1 style="font-size: 16pt;">LandTrace — Implementation & Governance</h1>
+          <div class="subtitle">Roadmap, Integration Architecture & Team Information</div>
+        </div>
+        <span class="badge">P3 Concept Note</span>
+      </div>
 
-  <h2>12. Future Government Systems Integration Plan</h2>
-  <div class="diagram-box">
+      <h2>10. Countrywide Implementation Roadmap</h2>
+      <div class="diagram-box">
+Phase 1 (Pilot — Months 1–4):
+  Deploy in 2 Upazilas (e.g., Tejgaon, Dhaka and Sylhet Sadar) in parallel with e-Mutation and e-Registration.
+Phase 2 (Divisional Rollout — Months 5–10):
+  Integrate LandTrace API into divisional Land Commissionerates; train AC (Land), Sub-Registrars, and Kanungos.
+Phase 3 (Nationwide Deployment — Months 11–18):
+  Full nationwide rollout across all 64 districts with centralized Ministry of Land dashboards.
+      </div>
+
+      <h2>11. Legal & Regulatory Boundary</h2>
+      <p><strong>Decision-Support Notice:</strong> LandTrace is designed strictly as an analytical decision-support tool for land officers. It does not issue judicial decrees, adjudicate legal ownership, or replace the statutory authority of Land Tribunals, Sub-Registrars, and Assistant Commissioners (Land) under the State Acquisition and Tenancy Act 1950 or Registration Act 1908.</p>
+
+      <h2>12. Proposed Future Government Systems Integration Plan</h2>
+      <div class="diagram-box">
 [ e-Registration (Sub-Registry) ] ───┐
-                                      ├── Authorized API Integration ──➔ [ LandTrace Engine ]
+                                      ├── Authorized Read-Only REST APIs ──➔ [ LandTrace Engine ]
 [ e-Mutation (AC Land / Khatian) ] ──┘                                        │
-                                                                              ▼
-                                                                  [ Officer Review & Audit ]
-  </div>
-  <p style="font-size: 8.8pt; color: #64748b; font-style: italic;">Note: Illustrates architectural target upon official government integration.</p>
+                                                                               ▼
+                                                                   [ Officer Review & Audit ]
+      </div>
+      <p style="font-size: 8.3pt; color: #475569; font-style: italic; margin-top: 2px;">Note: Illustrates the proposed production target architecture upon formal government onboarding, distinct from the current synthetic prototype.</p>
 
-  <h2>13. Team & Contact Information</h2>
-  <table>
-    <tr>
-      <th>Project</th>
-      <td><strong>LandTrace</strong></td>
-    </tr>
-    <tr>
-      <th>Problem Category</th>
-      <td>P3 — Fraud & Double-Selling Detection</td>
-    </tr>
-    <tr>
-      <th>Hackathon</th>
-      <td>LandTech Hackathon 2026</td>
-    </tr>
-    <tr>
-      <th>Live Production URL</th>
-      <td><a href="https://landtrace-rafiul-kabir.vercel.app">https://landtrace-rafiul-kabir.vercel.app</a></td>
-    </tr>
-    <tr>
-      <th>GitHub Repository</th>
-      <td><a href="https://github.com/RafiulKabir0/landtrace">https://github.com/RafiulKabir0/landtrace</a></td>
-    </tr>
-    <tr>
-      <th>Team</th>
-      <td>Team LandTrace</td>
-    </tr>
-  </table>
+      <h2>13. Team & Mentor Details</h2>
+      <table>
+        <tbody>
+          <tr>
+            <th style="width: 32%;">Project</th>
+            <td style="width: 68%;"><strong>LandTrace</strong></td>
+          </tr>
+          <tr>
+            <th>Problem Statement</th>
+            <td>P3 — Fraud & Double-Selling Detection</td>
+          </tr>
+          <tr>
+            <th>Hackathon</th>
+            <td>LandTech Hackathon 2026</td>
+          </tr>
+          <tr>
+            <th>Team Name</th>
+            <td><strong>Team LandTrace</strong></td>
+          </tr>
+          <tr>
+            <th>Lead Developer</th>
+            <td>Rafiul Kabir (GitHub: <a href="https://github.com/RafiulKabir0" style="color: #0f766e; text-decoration: none;">@RafiulKabir0</a>)</td>
+          </tr>
+          <tr>
+            <th>Mentor Details</th>
+            <td>None assigned / Self-directed (Independent submission)</td>
+          </tr>
+          <tr>
+            <th>Live Production URL</th>
+            <td><a href="https://landtrace.vercel.app" style="color: #0f766e; text-decoration: none; font-weight: 600;">https://landtrace.vercel.app</a></td>
+          </tr>
+          <tr>
+            <th>GitHub Repository</th>
+            <td><a href="https://github.com/RafiulKabir0/landtrace" style="color: #0f766e; text-decoration: none;">https://github.com/RafiulKabir0/landtrace</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-  <div class="footer">
-    <span>LandTrace — LandTech 2026 Concept Note</span>
-    <span>Page 4 of 4</span>
+    <div class="footer">
+      <span>LandTrace — LandTech 2026 Concept Note (Problem P3)</span>
+      <span>Page 4 of 4</span>
+    </div>
   </div>
 
 </body>
