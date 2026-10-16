@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "tsx --test tests/engine.test.ts",
+    "test": "tsx --test tests/**/*.test.ts",
     "seed": "tsx prisma/seed.ts",
     "postinstall": "prisma generate",
     "db:seed": "tsx prisma/seed.ts"

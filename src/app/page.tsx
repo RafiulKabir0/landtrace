@@ -32,7 +32,7 @@ export default function HomePage() {
           <div className="min-h-screen flex items-center justify-center text-slate-500 bg-slate-50">
             <div className="flex items-center gap-3 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
               <div className="h-5 w-5 rounded-full border-2 border-teal-600 border-t-transparent animate-spin" />
-              <span className="text-sm font-medium">Loading LandTrace Registry...</span>
+              <span className="text-sm font-medium">ল্যান্ডট্রেস রেকর্ড রেজিস্ট্রি লোড হচ্ছে... / Loading LandTrace Registry...</span>
             </div>
           </div>
         }
