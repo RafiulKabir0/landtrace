@@ -1,14 +1,14 @@
 # LandTrace
 
 ## LandTech 2026
-## P3 — Fraud & Double-Selling Detection
+## Problem Statement P3 — Fraud & Double-Selling Detection
 
 ### One-Line Idea
 Ownership-chain analysis to detect land fraud, double-selling, and record contradictions in Bangladesh land administration.
 
 ---
 
-### Problem
+### The Problem
 Land administration in Bangladesh faces severe vulnerability to fraudulent conveyances, overlapping deeds, and unauthorized transfers. Because Sub-Registry deed registration records and Assistant Commissioner (Land) mutation (নামজারি / খারিজ) khatians have historically operated in departmental silos, fraudulent actors exploit information gaps to:
 - Sell the same parcel multiple times to unsuspecting buyers (**Double Selling**).
 - Execute deeds through phantom sellers with broken chains of custody (**Chain Break**).
@@ -20,54 +20,84 @@ These contradictions tie citizens in decades of civil litigation, overburden lan
 
 ---
 
-### Solution
-**LandTrace** introduces an **Ownership Chain Contradiction Detection Engine** that models land records as a directed chain of title. By analyzing topological custody flows from the root survey record (CS / SA / RS / City Survey) down to the latest transfer, LandTrace detects mathematical and logical contradictions on demand, equipping land officers with actionable forensic evidence.
+### The Solution
+**LandTrace** introduces an **Ownership Chain Contradiction Detection Engine** that models land records as a directed chain of title. By analyzing topological custody flows from the root survey record (CS / SA / RS / BS) down to the latest transfer, LandTrace detects mathematical and logical contradictions on demand, equipping land officers with actionable forensic evidence.
 
 ---
 
-### Five Detection Capabilities
+### Five Core Detection Capabilities & Recommended Human Review Actions
 
 1. **Double Selling (দ্বৈত বিক্রয়)**: Detects subsequent conveyances by grantors who already alienated their recorded title without verified re-acquisition.
+   - *Recommended Action*: Order Sub-Registry volume register inspection and on-site physical possession inquiry.
 2. **Ownership Chain Break (মালিকানা ধারাবাহিকতা বিচ্ছিন্ন)**: Identifies grantors who possess no preceding recorded acquisition deed or inheritance title in the chain of custody.
+   - *Recommended Action*: Withhold mutation pending verification of root CS/SA records and legal heirship certificates.
 3. **Area Mismatch (খতিয়ান বনাম দলিল পরিমাপ অসঙ্গতি)**: Flags conveyances where deed acreage exceeds the parent cadastral survey khatian acreage.
+   - *Recommended Action*: Depute Kanungo / Surveyor for digital cadastral map verification and physical boundary demarcation.
 4. **Deed–Mutation Mismatch (দলিল ও নামজারি অমিল)**: Flags discrepancies where mutated namjari acreage contradicts the underlying registered deed or where the mutation applicant has no matching deed of title.
+   - *Recommended Action*: Summon AC (Land) case records and Sub-Registry volume register for comparative hearing.
 5. **Wrong Transfer Timing / Suspicious Rapid Transfer (সময়ানুক্রমিক অসঙ্গতি / দ্রুত হস্তান্তর)**: Flags anachronistic deeds executed before the grantor acquired title, as well as rapid successive resales (< 7 days) without interim namjari clearance.
+   - *Recommended Action*: Investigate potential fraudulent collusion or anachronistic conveyance prior to legitimate acquisition.
 
 ---
 
-### How It Works
+### Simple, Secure Authentication & Role Management
 
-```text
-Land Records
-     ↓
-Ownership Chain Construction
-     ↓
-Integrity & Contradiction Detection
-     ↓
-Risk Scoring (0–100)
-     ↓
-Forensic Evidence Dossier
-     ↓
-Officer Review & Field Inquiry
+LandTrace features server-side session management with signed HMAC-SHA256 tokens and bcrypt password hashing.
+
+#### Three Distinct User Roles:
+1. **Citizen (নাগরিক)**:
+   - Accesses permitted citizen-facing features and designated land records.
+   - Uses the Pre-Registration Risk Check Simulator to verify prospective deeds prior to purchase.
+   - Cannot access officer investigation actions or administrative user management.
+2. **Land Official (ভূমি কর্মকর্তা — AC Land / Sub-Registrar)**:
+   - Searches and audits all land records.
+   - Inspects full ownership chains, forensic parameters, and discrepancy metrics.
+   - Records investigation actions: Mark for Review, Request Field Inquiry, Add Note, Forward to Higher Authority.
+   - Generates and prints official Forensic Investigation Dossiers.
+   - Cannot modify system administrator settings or user roles.
+3. **Administrator (সিস্টেম অ্যাডমিন)**:
+   - Full access to all official features plus User Management (`/api/admin/users`).
+   - Activates/deactivates user accounts and assigns permitted roles.
+   - Safeguarded against self-deactivation.
+
+#### Demo Accounts for Competition Evaluation:
+The application includes a **1-Click Demo Role Switcher** on the top header and login modal for instant evaluation:
+
+| Role | Email | Password | Access Level |
+|---|---|---|---|
+| **Citizen** | `citizen@demo.landtrace.gov.bd` | `Citizen@LandTrace2026!` | Designated plot `PLOT-DH-1001` + Pre-Registration Check |
+| **Land Official** | `officer@demo.landtrace.gov.bd` | `Officer@LandTrace2026!` | Full record search, forensic dossier, officer actions |
+| **Administrator** | `admin@demo.landtrace.gov.bd` | `Admin@LandTrace2026!` | All features + User & Security Management |
+
+#### Initial Admin Provisioning Method:
+To securely provision a custom initial administrator without hardcoded credentials, define these environment variables:
+```bash
+INITIAL_ADMIN_EMAIL="admin@yourdomain.gov.bd"
+INITIAL_ADMIN_PASSWORD="YourStrongPassword2026!"
 ```
+Upon running `npm run seed`, LandTrace will securely hash the password with bcrypt and upsert the administrator record.
 
 ---
 
-### System Architecture
+### Data Model & Ownership Chain Architecture
 
-```text
-Officer Web App (Bilingual: বাংলা | English)
-     ↓
-Next.js Application / App Router API
-     ↓
-Ownership Chain Engine
-     ↓
-Fraud Detection Engine
-     ↓
-PostgreSQL (Neon Serverless) via Prisma ORM
-     ↓
-Risk Score + Forensic Evidence
-```
+The database model (`prisma/schema.prisma`) represents:
+- **Surveys**: Cadastral survey types (CS, SA, RS, BS/BRS, City Survey).
+- **Parcels**: Mouza, district, upazila, khatian number, dag (plot) number, total area in decimals (শতাংশ), current owner, ownership shares (co-owners and percentage), and cadastral provenance.
+- **Deeds**: Registration office, deed serial, grantor (seller), grantee (buyer), transferred area, execution date, deed type (Sale/Grant/Inheritance).
+- **Mutations**: Case number, applicant name, mutated area, approved khatian number, approval date, approving officer (AC Land).
+- **Anomalies**: Anomaly type, severity (Critical/High/Medium/Low), technical forensic parameters, and detected timestamps.
+- **Audit Logs**: Officer name, user ID, parcel ID, action type, persistent details, and timestamps.
+
+---
+
+### User Experience & Localization
+- **Default Language**: বাংলা (Bangla) by default throughout the entire application, utilizing natural Bangladesh land administration terminology.
+- **Instant Language Toggle**: Small `বাংলা | English` toggle in header with instant translation (no page reload) and persistent preference via `localStorage`.
+- **Light Theme**: Clean, authoritative, government-style white/slate-50 aesthetic.
+- **Main Dashboard**: Simple search, verification action, summary metrics, and parcel cards with clear next steps.
+- **Dedicated Investigation View**: Deep title inspection, visual chronological timeline, forensic evidence, and official decision-support actions.
+- **Responsive Layout**: Designed for mobile and desktop screens.
 
 ---
 
@@ -78,21 +108,15 @@ Risk Score + Forensic Evidence
 - **Language**: TypeScript 5
 - **ORM**: Prisma 6
 - **Database**: PostgreSQL (Neon Serverless)
+- **Authentication**: HMAC-SHA256 Signed Sessions & `bcryptjs`
 - **Deployment**: Vercel (Automatic GitHub CI/CD)
-- **Testing**: Node / TSX Native Test Suite
+- **Testing**: Node.js / TSX Native Test Suite (24 automated tests passing)
 - **Icons**: Lucide React
 
 ---
 
 ### Synthetic Data
-> **Notice**: All demonstration records across the 7 test parcels are **100% synthetic/dummy data**. No real citizen names, real land records, or personal identifying information are stored or used.
-
----
-
-### Privacy & Security
-- **No real citizen land records are used.**
-- **No government portal is scraped.**
-- **No live government system is accessed without authorization.**
+> **Notice**: All demonstration records across the 7 test parcels are **100% synthetic/dummy data**. No real citizen names, real NID numbers, or confidential government documents are stored or scraped.
 
 ---
 
@@ -104,15 +128,15 @@ npm install
 
 # 2. Configure local environment variables
 cp .env.example .env.local
-# Edit .env.local with your database connection string
+# Edit .env.local with your database connection string and optional initial admin credentials
 
 # 3. Generate Prisma client
 npx prisma generate
 
-# 4. Synchronize database schema
+# 4. Synchronize database schema (when database is connected)
 npx prisma db push
 
-# 5. Seed synthetic demonstration data
+# 5. Seed synthetic demonstration data and demo accounts
 npm run seed
 
 # 6. Start local development server
@@ -123,21 +147,21 @@ The application will be live at `http://localhost:3000`.
 
 ---
 
-### Testing
+### Automated Testing
 
-Run the full P3 detection engine test suite (covering all 8 scenarios):
+Run the full automated test suite covering all 5 detection rules, authorization checks, and localization formatters:
 
 ```bash
 npm test
 ```
+*Current test status: 24 passing, 0 failing.*
 
 ---
 
-### Production Build
-
-Create an optimized production bundle:
+### Production Build & Linting
 
 ```bash
+npm run lint
 npm run build
 ```
 
@@ -153,32 +177,14 @@ Every push to the `main` branch triggers an automated build and deployment on Ve
 
 ---
 
-### Future Government Integration
-
-```text
-Existing Government Systems (e-Mutation / e-Registration)
-     ↓
-Authorized API / Data Integration Layer
-     ↓
-LandTrace
-     ↓
-Contradiction Detection Engine
-     ↓
-Officer Decision Support
-```
-
-*Note: LandTrace does not claim current government API access; this illustrates the planned architecture upon government integration.*
-
----
-
 ### AI Tools Disclosure
-This project was developed with the assistance of **Google Antigravity (Gemini)** for pair programming, test case design, bilingual interface localization, and architecture documentation review. All code, schemas, and detection logic were verified and tested.
+This project was developed with the assistance of **Google Antigravity (Gemini)** for pair programming, test case design, bilingual interface localization, and architecture documentation review. All code, schemas, and detection logic were independently verified and tested.
 
 ---
 
-### Project Limitations
+### Decision-Support Prototype Limitations
 - **Synthetic Data**: Operates on deterministic synthetic test datasets for Round 1 demonstration.
-- **Prototype**: Prototype decision-support system designed for hackathon demonstration.
+- **Prototype State**: Investigation actions (Mark for review, field inquiries, notes) are stored inside the prototype decision-support buffer; they are not transmitted to external government servers.
 - **Decision-Support Only**: LandTrace assists Assistant Commissioners (Land) and Sub-Registrars with forensic contradiction analysis; it **does not legally determine ownership** or issue judicial decrees.
 
 ---
@@ -189,7 +195,6 @@ This project was developed with the assistance of **Google Antigravity (Gemini)*
 - **Hackathon**: LandTech 2026
 - **Team**: Team LandTrace
 - **Lead Developer**: Rafiul Kabir ([@RafiulKabir0](https://github.com/RafiulKabir0))
-- **Mentor**: None assigned / Self-directed (Independent submission)
+- **Mentor**: [Items requiring participant input: Official mentor assignment if designated by LandTech 2026 organizers]
 - **Live Production URL**: [https://landtrace.vercel.app](https://landtrace.vercel.app)
 - **Repository**: [https://github.com/RafiulKabir0/landtrace](https://github.com/RafiulKabir0/landtrace)
-

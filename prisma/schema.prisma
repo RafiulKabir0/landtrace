@@ -8,15 +8,34 @@ generator client {
   provider = "prisma-client-js"
 }
 
+model User {
+  id              String     @id @default(uuid())
+  email           String     @unique
+  name            String
+  passwordHash    String
+  role            String     @default("CITIZEN") // "CITIZEN", "OFFICIAL", "ADMIN"
+  isActive        Boolean    @default(true)
+  phoneNumber     String?
+  designation     String?
+  permittedPlots  String?    @default("ALL") // "ALL" or specific plot numbers like "PLOT-DH-1001"
+  auditLogs       AuditLog[]
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+}
+
 model Parcel {
   id              String          @id @default(uuid())
   parcelNumber    String          @unique
+  dagNumber       String          @default("101")
   khatianNumber   String
   mouza           String
   district        String
   upazila         String
-  totalArea       Float
+  surveyType      String          @default("RS") // "CS", "SA", "RS", "BS", "CITY_SURVEY"
+  totalArea       Float           // in decimals (শতাংশ)
   currentOwner    String
+  ownershipShares String?         // JSON representation of co-owners and percentage shares
+  provenance      String?         // Cadastral provenance e.g. "Cadastral Survey Record 1962"
   status          String          @default("ACTIVE")
   deeds           DeedRecord[]
   mutations       MutationRecord[]
@@ -39,6 +58,8 @@ model DeedRecord {
   deedType           String   @default("SALE")
   serialOrder        Int      @default(1)
   isVerified         Boolean  @default(false)
+  dagNumber          String?
+  surveyType         String?
   createdAt          DateTime @default(now())
 }
 
@@ -53,6 +74,7 @@ model MutationRecord {
   approvalDate  DateTime
   officerName   String
   status        String   @default("APPROVED")
+  dagNumber     String?
   createdAt     DateTime @default(now())
 }
 
@@ -73,8 +95,11 @@ model AuditLog {
   id          String   @id @default(uuid())
   parcelId    String?
   parcel      Parcel?  @relation(fields: [parcelId], references: [id], onDelete: SetNull)
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
   officerName String
   action      String
   details     String
   timestamp   DateTime @default(now())
 }
+

@@ -121,12 +121,12 @@ export function formatTime(dateOrTime: Date | string, lang: Language): string {
     const isPm = hours >= 12;
     hours = hours % 12 || 12;
 
-    const padHours = hours < 10 ? `0${hours}` : `${hours}`;
-    const padMin = minutes < 10 ? `0${minutes}` : `${minutes}`;
+    const padHours = hours < 10 ? (lang === "bn" ? `০${toBanglaDigits(hours)}` : `0${hours}`) : (lang === "bn" ? toBanglaDigits(hours) : `${hours}`);
+    const padMin = minutes < 10 ? (lang === "bn" ? `০${toBanglaDigits(minutes)}` : `0${minutes}`) : (lang === "bn" ? toBanglaDigits(minutes) : `${minutes}`);
 
     if (lang === "bn") {
       const period = isPm ? "অপরাহ্ন" : "পূর্বাহ্ন";
-      return `${toBanglaDigits(padHours)}:${toBanglaDigits(padMin)} ${period}`;
+      return `${padHours}:${padMin} ${period}`;
     }
     const period = isPm ? "PM" : "AM";
     return `${padHours}:${padMin} ${period}`;
@@ -178,6 +178,40 @@ export function getSeverityLabel(severity: string, lang: Language): string {
 }
 
 /**
+ * Returns human-review recommended actions for detected anomalies
+ */
+export function getRecommendedAction(anomalyType: string, lang: Language): string {
+  const recommendations: Record<string, { bn: string; en: string }> = {
+    DOUBLE_SELLING: {
+      bn: "উপজেলা সাব-রেজিস্ট্রারের বালাম বই তল্লাশি এবং সরেজমিন দখলদারিত্ব অনুসন্ধানের নির্দেশ দিন।",
+      en: "Order Sub-Registry volume register inspection and on-site physical possession inquiry.",
+    },
+    CHAIN_BREAK: {
+      bn: "মূল সিএস/এসএ রেকর্ড ও ওয়ারিশান সনদপত্র যাচাই না হওয়া পর্যন্ত নামজারি স্থগিত রাখুন।",
+      en: "Withhold mutation pending verification of root CS/SA records and legal heirship certificates.",
+    },
+    AREA_MISMATCH: {
+      bn: "উপজেলা কানুনগো / সার্ভেয়ার দ্বারা ডিজিটাল নকশা ও সরেজমিন সীমানা পরিমাপের নির্দেশ দিন।",
+      en: "Depute Kanungo / Surveyor for digital cadastral map verification and physical boundary demarcation.",
+    },
+    DEED_MUTATION_MISMATCH: {
+      bn: "খারিজ নথির সহকারী নথি ও সাব-রেজিস্ট্রির মূল বালাম বই তলব করে শুনানি গ্রহণ করুন।",
+      en: "Summon AC (Land) case records and Sub-Registry volume register for comparative hearing.",
+    },
+    TIMING_ANOMALY: {
+      bn: "স্বত্ব অর্জনের পূর্ববর্তী হস্তান্তর সংক্রান্ত ভুয়া বা যোগসাজশকৃত দলিলের নিরপেক্ষ তদন্ত করুন।",
+      en: "Investigate potential fraudulent collusion or anachronistic conveyance prior to title acquisition.",
+    },
+  };
+  return (
+    recommendations[anomalyType]?.[lang] ||
+    (lang === "bn"
+      ? "নথি পর্যালোচনা ও সহকারী কমিশনার (ভূমি) দ্বারা শুনানির ব্যবস্থা গ্রহণ করুন।"
+      : "Schedule case dossier review and hearing before Assistant Commissioner (Land).")
+  );
+}
+
+/**
  * Centralized UI Translations Dictionary
  */
 export const translations = {
@@ -194,10 +228,39 @@ export const translations = {
     legalDisclaimer:
       "আইনি সতর্কবার্তা: ল্যান্ডট্রেস একটি বিশ্লেষণমূলক সিদ্ধান্ত-সহায়ক প্ল্যাটফর্ম। এটি আইনি মালিকানা নির্ধারণ করে না বা বিচারিক আদেশ প্রদান করে না।",
 
+    // Roles & Auth
+    roleCitizen: "নাগরিক (Citizen)",
+    roleOfficial: "ভূমি কর্মকর্তা (Land Official)",
+    roleAdmin: "সিস্টেম অ্যাডমিন (Administrator)",
+    currentRole: "বর্তমান ব্যবহারকারী:",
+    loginBtn: "লগইন করুন",
+    logoutBtn: "লগআউট",
+    registerBtn: "নাগরিক নিবন্ধন",
+    quickDemoRolesTitle: "ডেমো রোল পরিবর্তন (১-ক্লিক পরীক্ষক সুইচ):",
+    switchRoleNote: "বিচারক ও পরীক্ষকদের জন্য তাৎক্ষণিক ৩টি ভূমিকার ডেমো অ্যাকাউন্ট প্রস্তুত করা আছে।",
+    demoCitizenBtn: "👤 নাগরিক ডেমো",
+    demoOfficerBtn: "🏛️ ভূমি কর্মকর্তা ডেমো",
+    demoAdminBtn: "🛡️ সিস্টেম অ্যাডমিন ডেমো",
+    loginModalTitle: "ল্যান্ডট্রেস নিরাপত্তা প্রবেশদ্বার",
+    loginSubtitle: "আপনার সংরক্ষিত প্রাতিষ্ঠানিক বা নাগরিক অ্যাকাউন্ট দিয়ে প্রবেশ করুন",
+    registerModalTitle: "নতুন নাগরিক অ্যাকাউন্ট নিবন্ধন",
+    registerSubtitle: "জমি ক্রেতা বা ওয়ারিশ হিসেবে আপনার খতিয়ান ও দলিলের নিরাপত্তা যাচাই করুন",
+    emailLabel: "ইমেইল ঠিকানা",
+    passwordLabel: "গোপন পাসওয়ার্ড",
+    nameLabel: "পূর্ণ নাম",
+    phoneLabel: "মোবাইল নম্বর",
+    roleLabel: "সিস্টেম পদমর্যাদা / ভূমিকা",
+    submitLogin: "নিরাপদে প্রবেশ করুন",
+    submitRegister: "অ্যাকাউন্ট তৈরি করুন",
+    alreadyHaveAccount: "ইতিমধ্যে অ্যাকাউন্ট আছে? লগইন করুন",
+    needAccount: "নতুন নাগরিক? এখানে নিবন্ধন করুন",
+
     // Navigation Tabs
-    tabDashboard: "রেকর্ড ও তদন্ত বিশ্লেষণ",
+    tabDashboard: "রেকর্ড ও অনুসন্ধান ড্যাশবোর্ড",
+    tabInvestigation: "তদন্ত বিবরণী ও ফরেনসিক বিশ্লেষণ",
     tabTransferCheck: "রেজিস্ট্রেশন পূর্ববর্তী ঝুঁকি যাচাই",
     tabAlerts: "শনাক্তকৃত সকল অসঙ্গতি",
+    tabAdmin: "ব্যবহারকারী ও নিরাপত্তা ব্যবস্থাপনা",
 
     // Search and Primary Actions
     searchPlaceholder: "দাগ নম্বর (যেমন: PLOT-DH-2045), খতিয়ান, মৌজা বা দলিল দিয়ে খুঁজুন...",
@@ -230,14 +293,20 @@ export const translations = {
     decimals: "শতাংশ",
     cleanStatus: "বৈধ ধারাবাহিকতা",
     flaggedStatus: "ঝুঁকিপূর্ণ / অসঙ্গতিপূর্ণ",
+    openDossierBtn: "পূর্ণাঙ্গ তদন্ত রিপোর্ট খুলুন",
+    backToDashboard: "ড্যাশবোর্ডে ফিরুন",
 
     // Investigation Dossier Panel
+    dagNumber: "দাগ নম্বর",
+    surveyType: "জরিপের ধরন",
     khatian: "খতিয়ান",
     mouza: "মৌজা",
     upazila: "উপজেলা",
     district: "জেলা",
     totalArea: "মোট পরিমাপ",
     currentOwner: "বর্তমান মালিক",
+    ownershipShares: "মালিকানা অংশ ও হিস্যা",
+    provenance: "রেকর্ডের উৎস ও ঐতিহাসিক ভিত্তি",
     printReport: "তদন্ত সারাংশ মুদ্রণ",
     riskScore: "ঝুঁকি স্কোর",
     riskScoreTitle: "সিদ্ধান্ত-সহায়ক ঝুঁকি স্কোর",
@@ -247,6 +316,7 @@ export const translations = {
     mediumRisk: "মাঝারি ঝুঁকি (Medium Risk)",
     cleanRisk: "ঝুঁকিমুক্ত (Clean)",
     contradictionsCount: (count: number) => `${toBanglaDigits(count)}টি অসঙ্গতি চিহ্নিত`,
+    recommendedActionTitle: "সুপারিশকৃত অনুসন্ধান পদক্ষেপ:",
 
     // Area Comparison
     areaComparisonTitle: "পরিমাপের তুলনা (খতিয়ান বনাম দলিল)",
@@ -284,6 +354,10 @@ export const translations = {
     actionForward: "উর্ধ্বতন কর্তৃপক্ষের নিকট প্রেরণ",
     recentActions: "সাম্প্রতিক কর্মকর্তা পদক্ষেপ ট্রেইল:",
     initialCustodyNote: "প্রাথমিক স্বত্ব ধারাবাহিকতা সিদ্ধান্ত-সহায়ক বাফারে লোড হয়েছে — ACL-DH-2026",
+    actionRecordedNotice: (action: string) =>
+      `পদক্ষেপ '${action}' ল্যান্ডট্রেস প্রোটোটাইপ সিদ্ধান্ত-সহায়ক বাফারে সংরক্ষিত হয়েছে। (প্রোটোটাইপ টেস্ট ডেটা; কোনো লাইভ সরকারি পোর্টালে সরাসরি প্রেরিত হয়নি)।`,
+    citizenRestrictedMsg:
+      "বিজ্ঞপ্তি: আপনি নাগরিক হিসেবে প্রবেশ করেছেন। কেবলমাত্র অনুমোদিত ভূমি কর্মকর্তা ও সিস্টেম অ্যাডমিন তদন্ত নোট ও পদক্ষেপ সম্পাদন করতে পারেন।",
 
     // Pre-Registration Risk Check Simulator
     simTitle: "নতুন দলিল রেজিস্ট্রেশন পূর্ববর্তী ঝুঁকি যাচাই (Pre-Registration Audit)",
@@ -309,6 +383,21 @@ export const translations = {
     tabAlertsTitle: "শনাক্তকৃত সকল অসঙ্গতি",
     tabAlertsSubtitle: "৭টি সিন্থেটিক প্লটের মধ্যে সনাক্তকৃত সকল অসঙ্গতির বিস্তারিত তালিকা",
     viewDossierLink: "তদন্ত বিবরণ দেখুন",
+
+    // Admin User Management
+    adminTitle: "সিস্টেম প্রশাসন ও ব্যবহারকারী ব্যবস্থাপনা",
+    adminSubtitle: "নিবন্ধিত ব্যবহারকারীদের ভূমিকা পরিবর্তন ও অ্যাকাউন্ট সক্রিয়/নিষ্ক্রিয়করণ",
+    userColName: "নাম ও পদবি",
+    userColEmail: "ইমেইল",
+    userColRole: "ভূমিকা (Role)",
+    userColStatus: "স্থিতি (Status)",
+    userColActions: "অ্যাডমিন অ্যাকশন",
+    statusActive: "সক্রিয়",
+    statusInactive: "নিষ্ক্রিয়",
+    makeOfficialBtn: "ভূমি কর্মকর্তা বানান",
+    makeCitizenBtn: "নাগরিক বানান",
+    makeAdminBtn: "অ্যাডমিন বানান",
+    toggleStatusBtn: "স্থিতি পরিবর্তন",
 
     // Modals
     noteModalTitle: "তদন্তকারী কর্মকর্তার নোট অন্তর্ভুক্তি",
@@ -341,10 +430,39 @@ export const translations = {
     legalDisclaimer:
       "Legal Notice: LandTrace is an analytical decision-support system. It does not legally determine title ownership or issue judicial decrees.",
 
+    // Roles & Auth
+    roleCitizen: "Citizen",
+    roleOfficial: "Land Official",
+    roleAdmin: "Administrator",
+    currentRole: "Current User:",
+    loginBtn: "Sign In",
+    logoutBtn: "Sign Out",
+    registerBtn: "Citizen Sign Up",
+    quickDemoRolesTitle: "Demo Role Switcher (1-Click Judge Switch):",
+    switchRoleNote: "Instant pre-configured demo roles prepared for competition evaluation.",
+    demoCitizenBtn: "👤 Citizen Demo",
+    demoOfficerBtn: "🏛️ Official Demo",
+    demoAdminBtn: "🛡️ Admin Demo",
+    loginModalTitle: "LandTrace Secure Gateway",
+    loginSubtitle: "Sign in with your official or citizen credentials",
+    registerModalTitle: "Citizen Registration",
+    registerSubtitle: "Verify your land deed security and prevent fraud before registration",
+    emailLabel: "Email Address",
+    passwordLabel: "Password",
+    nameLabel: "Full Name",
+    phoneLabel: "Phone Number",
+    roleLabel: "System Role",
+    submitLogin: "Sign In Securely",
+    submitRegister: "Create Account",
+    alreadyHaveAccount: "Already registered? Sign in",
+    needAccount: "New citizen? Register here",
+
     // Navigation Tabs
-    tabDashboard: "Records & Investigation",
+    tabDashboard: "Records & Search Dashboard",
+    tabInvestigation: "Forensic Investigation Dossier",
     tabTransferCheck: "Pre-Registration Risk Check",
     tabAlerts: "All Detected Contradictions",
+    tabAdmin: "User & Security Management",
 
     // Search and Primary Actions
     searchPlaceholder: "Search by plot number (e.g. PLOT-DH-2045), khatian, mouza, or deed...",
@@ -377,14 +495,20 @@ export const translations = {
     decimals: "decimals",
     cleanStatus: "Clean Custody",
     flaggedStatus: "Flagged Anomaly",
+    openDossierBtn: "Open Full Investigation Dossier",
+    backToDashboard: "Back to Dashboard",
 
     // Investigation Dossier Panel
+    dagNumber: "Dag No.",
+    surveyType: "Survey Type",
     khatian: "Khatian",
     mouza: "Mouza",
     upazila: "Upazila",
     district: "District",
     totalArea: "Recorded Total Area",
     currentOwner: "Recorded Owner",
+    ownershipShares: "Ownership Shares & Co-owners",
+    provenance: "Cadastral Provenance & Historical Root",
     printReport: "Print Dossier",
     riskScore: "Risk Score",
     riskScoreTitle: "Decision-Support Risk Score",
@@ -394,6 +518,7 @@ export const translations = {
     mediumRisk: "Medium Risk",
     cleanRisk: "Clean",
     contradictionsCount: (count: number) => `${count} contradictions flagged`,
+    recommendedActionTitle: "Recommended Human Review Action:",
 
     // Area Comparison
     areaComparisonTitle: "Area Comparison (Khatian vs. Deed)",
@@ -431,6 +556,10 @@ export const translations = {
     actionForward: "Forward for Review",
     recentActions: "Officer Action Trail:",
     initialCustodyNote: "Initial custody chain loaded into decision-support buffer — ACL-DH-2026",
+    actionRecordedNotice: (action: string) =>
+      `Action '${action}' recorded in LandTrace prototype decision buffer. (Prototype test data; not transmitted to external government servers).`,
+    citizenRestrictedMsg:
+      "Notice: You are logged in as a Citizen. Officer review actions and notes are restricted to authorized Land Officials and System Administrators.",
 
     // Pre-Registration Risk Check Simulator
     simTitle: "Pre-Registration Transfer Risk Check",
@@ -456,6 +585,21 @@ export const translations = {
     tabAlertsTitle: "All Detected Contradictions",
     tabAlertsSubtitle: "Comprehensive breakdown of contradictions flagged across the 7 synthetic test parcels",
     viewDossierLink: "View Dossier",
+
+    // Admin User Management
+    adminTitle: "System Administration & User Management",
+    adminSubtitle: "Manage registered user accounts, assign permitted roles, and activate/deactivate accounts",
+    userColName: "Name & Designation",
+    userColEmail: "Email",
+    userColRole: "Role",
+    userColStatus: "Status",
+    userColActions: "Admin Actions",
+    statusActive: "Active",
+    statusInactive: "Inactive",
+    makeOfficialBtn: "Promote to Official",
+    makeCitizenBtn: "Set as Citizen",
+    makeAdminBtn: "Promote to Admin",
+    toggleStatusBtn: "Toggle Status",
 
     // Modals
     noteModalTitle: "Add Officer Investigation Note",

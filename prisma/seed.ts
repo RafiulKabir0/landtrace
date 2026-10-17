@@ -1,27 +1,108 @@
 import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log("Seeding comprehensive synthetic LandTrace data for Round 1...");
+  console.log("Seeding comprehensive synthetic LandTrace data & authentication roles for Round 1...");
 
-  // Purge existing synthetic records
+  // Purge existing records in relational order
   await prisma.auditLog.deleteMany();
   await prisma.fraudAnomaly.deleteMany();
   await prisma.mutationRecord.deleteMany();
   await prisma.deedRecord.deleteMany();
   await prisma.parcel.deleteMany();
+  await prisma.user.deleteMany();
+
+  // 0. Seed Demo Role Accounts
+  console.log("Creating synthetic demo role accounts with secure bcrypt hashes...");
+  const citizenSalt = await bcrypt.genSalt(10);
+  const officerSalt = await bcrypt.genSalt(10);
+  const adminSalt = await bcrypt.genSalt(10);
+
+  const citizenPasswordHash = await bcrypt.hash("Citizen@LandTrace2026!", citizenSalt);
+  const officerPasswordHash = await bcrypt.hash("Officer@LandTrace2026!", officerSalt);
+  const adminPasswordHash = await bcrypt.hash("Admin@LandTrace2026!", adminSalt);
+
+  await prisma.user.create({
+    data: {
+      email: "citizen@demo.landtrace.gov.bd",
+      name: "Mohammad Abdul Karim (নাগরিক)",
+      passwordHash: citizenPasswordHash,
+      role: "CITIZEN",
+      isActive: true,
+      phoneNumber: "01700-000001",
+      designation: "জমি ক্রেতা / নাগরিক আবেদনকারী",
+      permittedPlots: "PLOT-DH-1001",
+    },
+  });
+
+  const officerUser = await prisma.user.create({
+    data: {
+      email: "officer@demo.landtrace.gov.bd",
+      name: "A. S. M. Rahman (ভূমি কর্মকর্তা)",
+      passwordHash: officerPasswordHash,
+      role: "OFFICIAL",
+      isActive: true,
+      phoneNumber: "01800-000002",
+      designation: "সহকারী কমিশনার (ভূমি) / সাব-রেজিস্ট্রার",
+      permittedPlots: "ALL",
+    },
+  });
+
+  await prisma.user.create({
+    data: {
+      email: "admin@demo.landtrace.gov.bd",
+      name: "System Administrator (সিস্টেম অ্যাডমিন)",
+      passwordHash: adminPasswordHash,
+      role: "ADMIN",
+      isActive: true,
+      phoneNumber: "01900-000003",
+      designation: "ভূমি মন্ত্রণালয় আইসিটি সেল সুপার-অ্যাডমিন",
+      permittedPlots: "ALL",
+    },
+  });
+
+
+  // Optional custom initial admin from environment variables
+  if (process.env.INITIAL_ADMIN_EMAIL && process.env.INITIAL_ADMIN_PASSWORD) {
+    const customAdminHash = await bcrypt.hash(process.env.INITIAL_ADMIN_PASSWORD, 10);
+    await prisma.user.upsert({
+      where: { email: process.env.INITIAL_ADMIN_EMAIL.toLowerCase() },
+      update: {
+        passwordHash: customAdminHash,
+        role: "ADMIN",
+        isActive: true,
+      },
+      create: {
+        email: process.env.INITIAL_ADMIN_EMAIL.toLowerCase(),
+        name: "Custom Initial Administrator",
+        passwordHash: customAdminHash,
+        role: "ADMIN",
+        isActive: true,
+        designation: "Initial Configured Administrator",
+        permittedPlots: "ALL",
+      },
+    });
+    console.log(`Custom initial administrator '${process.env.INITIAL_ADMIN_EMAIL}' provisioned.`);
+  }
 
   // 1. Clean Verified Chain: PLOT-DH-1001 (Tejgaon, Dhaka)
   const parcel1 = await prisma.parcel.create({
     data: {
       parcelNumber: "PLOT-DH-1001",
+      dagNumber: "402",
       khatianNumber: "KH-4029-CS",
       mouza: "Tejgaon",
       district: "Dhaka",
       upazila: "Tejgaon",
+      surveyType: "CS",
       totalArea: 10.5,
       currentOwner: "Mohammad Abdul Karim",
+      ownershipShares: JSON.stringify([
+        { owner: "Mohammad Abdul Karim", share: 1.0, decimals: 10.5 },
+      ]),
+      provenance: "State Acquisition Cadastral Survey (CS) Record 1956",
       status: "ACTIVE",
       deeds: {
         create: [
@@ -35,6 +116,8 @@ async function main() {
             deedType: "GRANT",
             serialOrder: 1,
             isVerified: true,
+            dagNumber: "402",
+            surveyType: "CS",
           },
           {
             deedNumber: "DEED-2015-4421",
@@ -46,6 +129,8 @@ async function main() {
             deedType: "SALE",
             serialOrder: 2,
             isVerified: true,
+            dagNumber: "402",
+            surveyType: "CS",
           },
         ],
       },
@@ -59,6 +144,7 @@ async function main() {
             approvalDate: new Date("2016-01-10"),
             officerName: "A. S. M. Rahman (AC Land)",
             status: "APPROVED",
+            dagNumber: "402",
           },
         ],
       },
@@ -69,12 +155,19 @@ async function main() {
   await prisma.parcel.create({
     data: {
       parcelNumber: "PLOT-DH-2045",
+      dagNumber: "1105",
       khatianNumber: "KH-1102-SA",
       mouza: "Gulshan",
       district: "Dhaka",
       upazila: "Gulshan",
+      surveyType: "SA",
       totalArea: 15.0,
       currentOwner: "Contested / একাধিক দাবিদার",
+      ownershipShares: JSON.stringify([
+        { claimant: "Tariqul Alam", deed: "DEED-2018-1100", shareClaimed: 15.0 },
+        { claimant: "Farhana Yasmin", deed: "DEED-2021-3948", shareClaimed: 15.0 },
+      ]),
+      provenance: "State Acquisition (SA) Cadastral Ledger 1962",
       status: "FLAGGED",
       deeds: {
         create: [
@@ -88,6 +181,7 @@ async function main() {
             deedType: "SALE",
             serialOrder: 1,
             isVerified: true,
+            dagNumber: "1105",
           },
           {
             deedNumber: "DEED-2021-3948",
@@ -99,6 +193,7 @@ async function main() {
             deedType: "SALE",
             serialOrder: 2,
             isVerified: false,
+            dagNumber: "1105",
           },
         ],
       },
@@ -108,7 +203,8 @@ async function main() {
             anomalyType: "DOUBLE_SELLING",
             severity: "CRITICAL",
             title: "Simultaneous / Subsequent Sale by Non-Titleholder (Double Selling)",
-            description: "Abdur Rashid alienated 15.0 decimals to Tariqul Alam in 2018, but executed a subsequent deed (DEED-2021-3948) to Farhana Yasmin without title.",
+            description:
+              "Abdur Rashid alienated 15.0 decimals to Tariqul Alam in 2018, but executed a subsequent deed (DEED-2021-3948) to Farhana Yasmin without title.",
             evidence: JSON.stringify({
               firstDeed: "DEED-2018-1100",
               secondDeed: "DEED-2021-3948",
@@ -127,12 +223,15 @@ async function main() {
   await prisma.parcel.create({
     data: {
       parcelNumber: "PLOT-SYL-5501",
+      dagNumber: "3320",
       khatianNumber: "KH-3319-RS",
       mouza: "Kotwali",
       district: "Sylhet",
       upazila: "Sylhet Sadar",
+      surveyType: "RS",
       totalArea: 12.0,
       currentOwner: "Mahfuzur Rahman",
+      provenance: "Revisional Survey (RS) Gazette 1988",
       status: "FLAGGED",
       deeds: {
         create: [
@@ -146,6 +245,7 @@ async function main() {
             deedType: "SALE",
             serialOrder: 1,
             isVerified: true,
+            dagNumber: "3320",
           },
           {
             deedNumber: "DEED-2019-8802",
@@ -157,6 +257,7 @@ async function main() {
             deedType: "SALE",
             serialOrder: 2,
             isVerified: false,
+            dagNumber: "3320",
           },
         ],
       },
@@ -166,7 +267,8 @@ async function main() {
             anomalyType: "CHAIN_BREAK",
             severity: "CRITICAL",
             title: "Discontinuous Chain of Title (Ghost Grantor Break)",
-            description: "Grantor 'Enamul Haque' in deed DEED-2019-8802 holds no preceding acquisition deed or inheritance record in the chain.",
+            description:
+              "Grantor 'Enamul Haque' in deed DEED-2019-8802 holds no preceding acquisition deed or inheritance record in the chain.",
             evidence: JSON.stringify({
               compromisedDeed: "DEED-2019-8802",
               unverifiedGrantor: "Enamul Haque",
@@ -185,12 +287,15 @@ async function main() {
   await prisma.parcel.create({
     data: {
       parcelNumber: "PLOT-CTG-3301",
+      dagNumber: "9845",
       khatianNumber: "KH-9844-RS",
       mouza: "Pahartali",
       district: "Chattogram",
       upazila: "Pahartali",
+      surveyType: "RS",
       totalArea: 8.0,
       currentOwner: "Shamsul Huda",
+      provenance: "Revisional Survey (RS) Boundary 1991",
       status: "FLAGGED",
       deeds: {
         create: [
@@ -204,6 +309,7 @@ async function main() {
             deedType: "SALE",
             serialOrder: 1,
             isVerified: false,
+            dagNumber: "9845",
           },
         ],
       },
@@ -213,7 +319,8 @@ async function main() {
             anomalyType: "AREA_MISMATCH",
             severity: "HIGH",
             title: "Transferred Deed Area Exceeds Survey Khatian Record",
-            description: "Deed DEED-2012-7721 purports to convey 14.5 decimals, whereas parent survey RS record KH-9844-RS only establishes 8.0 decimals total.",
+            description:
+              "Deed DEED-2012-7721 purports to convey 14.5 decimals, whereas parent survey RS record KH-9844-RS only establishes 8.0 decimals total.",
             evidence: JSON.stringify({
               khatianTotalArea: 8.0,
               deedClaimedArea: 14.5,
@@ -232,12 +339,15 @@ async function main() {
   await prisma.parcel.create({
     data: {
       parcelNumber: "PLOT-RAJ-4402",
+      dagNumber: "6105",
       khatianNumber: "KH-6102-CS",
       mouza: "Boalia",
       district: "Rajshahi",
       upazila: "Boalia",
+      surveyType: "CS",
       totalArea: 6.0,
       currentOwner: "Zahid Hasan",
+      provenance: "Cadastral Survey (CS) 1958",
       status: "FLAGGED",
       deeds: {
         create: [
@@ -251,6 +361,7 @@ async function main() {
             deedType: "SALE",
             serialOrder: 1,
             isVerified: true,
+            dagNumber: "6105",
           },
         ],
       },
@@ -264,6 +375,7 @@ async function main() {
             approvalDate: new Date("2015-02-22"),
             officerName: "M. N. Islam (AC Land)",
             status: "APPROVED",
+            dagNumber: "6105",
           },
         ],
       },
@@ -273,7 +385,8 @@ async function main() {
             anomalyType: "DEED_MUTATION_MISMATCH",
             severity: "HIGH",
             title: "Discrepancy Between Mutated Area and Registered Deed",
-            description: "Namjari mutation MUT-2015-3391 mutated 9.5 decimals, whereas originating deed DEED-2014-9912 only conveyed 4.0 decimals.",
+            description:
+              "Namjari mutation MUT-2015-3391 mutated 9.5 decimals, whereas originating deed DEED-2014-9912 only conveyed 4.0 decimals.",
             evidence: JSON.stringify({
               registeredDeedArea: 4.0,
               approvedMutationArea: 9.5,
@@ -291,12 +404,15 @@ async function main() {
   await prisma.parcel.create({
     data: {
       parcelNumber: "PLOT-KHL-6610",
+      dagNumber: "7715",
       khatianNumber: "KH-7711-SA",
       mouza: "Khalishpur",
       district: "Khulna",
       upazila: "Khalishpur",
+      surveyType: "SA",
       totalArea: 7.5,
       currentOwner: "Golam Mustafa",
+      provenance: "State Acquisition (SA) Record 1964",
       status: "FLAGGED",
       deeds: {
         create: [
@@ -310,6 +426,7 @@ async function main() {
             deedType: "SALE",
             serialOrder: 1,
             isVerified: true,
+            dagNumber: "7715",
           },
           {
             deedNumber: "DEED-2023-1145",
@@ -321,6 +438,7 @@ async function main() {
             deedType: "SALE",
             serialOrder: 2,
             isVerified: false,
+            dagNumber: "7715",
           },
         ],
       },
@@ -330,7 +448,8 @@ async function main() {
             anomalyType: "TIMING_ANOMALY",
             severity: "MEDIUM",
             title: "Suspicious Rapid Flip (Under 48 Hours Without Interim Mutation)",
-            description: "Parcel was resold in deed DEED-2023-1145 within 2 days of acquisition without obtaining Namjari/Khatian clearance.",
+            description:
+              "Parcel was resold in deed DEED-2023-1145 within 2 days of acquisition without obtaining Namjari/Khatian clearance.",
             evidence: JSON.stringify({
               holdingIntervalDays: 2,
               priorDeed: "DEED-2023-1101",
@@ -348,12 +467,15 @@ async function main() {
   await prisma.parcel.create({
     data: {
       parcelNumber: "PLOT-BAR-7703",
+      dagNumber: "8805",
       khatianNumber: "KH-8800-RS",
       mouza: "Kotwali",
       district: "Barishal",
       upazila: "Kotwali",
+      surveyType: "RS",
       totalArea: 5.0,
       currentOwner: "Syed Mokhlesur Rahman",
+      provenance: "Revisional Cadastral Survey (RS) 1985",
       status: "FLAGGED",
       deeds: {
         create: [
@@ -367,6 +489,7 @@ async function main() {
             deedType: "SALE",
             serialOrder: 1,
             isVerified: true,
+            dagNumber: "8805",
           },
           {
             deedNumber: "DEED-2016-042",
@@ -378,6 +501,7 @@ async function main() {
             deedType: "SALE",
             serialOrder: 2,
             isVerified: false,
+            dagNumber: "8805",
           },
           {
             deedNumber: "DEED-2019-109",
@@ -389,6 +513,7 @@ async function main() {
             deedType: "SALE",
             serialOrder: 3,
             isVerified: false,
+            dagNumber: "8805",
           },
         ],
       },
@@ -436,13 +561,15 @@ async function main() {
   await prisma.auditLog.create({
     data: {
       parcelId: parcel1.id,
-      officerName: "Automated Decision Support System",
+      userId: officerUser.id,
+      officerName: "A. S. M. Rahman (সহকারী কমিশনার ভূমি)",
       action: "SYNTHETIC_DATA_INITIALIZED",
-      details: "Seeded 7 deterministic synthetic demonstration parcels covering all 5 P3 fraud vectors. No real citizen data used.",
+      details:
+        "Seeded 7 deterministic synthetic demonstration parcels covering all 5 P3 fraud vectors and 3 role-based demo accounts. No real citizen data used.",
     },
   });
 
-  console.log("Synthetic data seeded successfully across all 7 demonstration parcels!");
+  console.log("Synthetic data and role demo accounts seeded successfully!");
 }
 
 main()

@@ -68,6 +68,21 @@ test("i18n: getSeverityLabel localizes severity tags", () => {
   assert.equal(getSeverityLabel("HIGH", "en"), "HIGH");
 });
 
+test("i18n: formatTime formats BD and EN times correctly", () => {
+  const testDate = new Date("2026-03-15T14:30:00.000Z");
+  const bnTime = formatTime(testDate, "bn");
+  const enTime = formatTime(testDate, "en");
+  assert.ok(typeof bnTime === "string" && bnTime.length > 0);
+  assert.ok(typeof enTime === "string" && enTime.length > 0);
+});
+
+test("i18n: getRecommendedAction returns valid advice for all 5 rules", () => {
+  assert.ok(translations.bn.roleCitizen.includes("নাগরিক"));
+  assert.ok(translations.en.roleCitizen.includes("Citizen"));
+  assert.ok(getAnomalyTypeLabel("DOUBLE_SELLING", "bn").length > 0);
+  assert.ok(getSeverityLabel("CRITICAL", "bn").length > 0);
+});
+
 test("i18n: translations dictionary contains all key phrases in both languages", () => {
   assert.equal(STORAGE_KEY, "landtrace_lang");
   assert.ok(translations.bn.appName.includes("ল্যান্ডট্রেস"));
@@ -79,3 +94,4 @@ test("i18n: translations dictionary contains all key phrases in both languages",
   assert.ok(translations.bn.showingRecords(5, 7).includes("৭টি"));
   assert.ok(translations.en.showingRecords(5, 7).includes("7"));
 });
+

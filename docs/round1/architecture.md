@@ -9,18 +9,21 @@ LandTrace is architected as an end-to-end cloud-native web platform utilizing a 
 
 ```text
 ┌────────────────────────────────────────────────────────┐
-│            Presentation Layer (Officer UI)             │
-│  - Bilingual Support (বাংলা default / English)         │
+│            Presentation Layer (Bilingual UI)          │
+│  - Citizen, Land Official, & Administrator Dashboards  │
+│  - Dedicated Forensic Investigation Dossier View       │
+│  - Natural বাংলা (Bangla default) / English Toggle     │
 │  - Next.js 16 App Router + React 19 Client Components  │
-│  - Tailwind CSS v4 Government-Style Theme              │
+│  - Tailwind CSS v4 Government-Style Light Theme        │
 └───────────────────────────┬────────────────────────────┘
                             │
                             ▼
 ┌────────────────────────────────────────────────────────┐
 │             Application & Business Logic Layer         │
-│  - Next.js Server Components & Route Handlers          │
+│  - Server-Side Role Authorization (HMAC-SHA256 tokens) │
+│  - Next.js Route Handlers & Server Actions             │
 │  - Pure TypeScript Contradiction Detection Engine      │
-│  - Pre-Registration Simulation Service                 │
+│  - Pre-Registration Risk Simulation Service            │
 └───────────────────────────┬────────────────────────────┘
                             │
                             ▼
@@ -28,30 +31,48 @@ LandTrace is architected as an end-to-end cloud-native web platform utilizing a 
 │               Data Persistence Layer                   │
 │  - Prisma 6 ORM Client                                 │
 │  - Neon Serverless PostgreSQL 16 (SSL Enforced)        │
-│  - Direct & Connection-Pooled URL Routing              │
+│  - Relational Models: User, Parcel, Deed, Mutation,    │
+│    Anomaly, and AuditLog                               │
 └────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-### 2. Core Domain Data Model
+### 2. Core Domain Data Model & Entity Relationships
 
 ```mermaid
 erDiagram
+    USER ||--o{ AUDIT_LOG : records
     PARCEL ||--o{ DEED_RECORD : contains
     PARCEL ||--o{ MUTATION_RECORD : contains
     PARCEL ||--o{ FRAUD_ANOMALY : flags
     PARCEL ||--o{ AUDIT_LOG : tracks
 
+    USER {
+        string id PK
+        string email UK
+        string name
+        string passwordHash
+        string role
+        boolean isActive
+        string phoneNumber
+        string designation
+        string permittedPlots
+    }
+
     PARCEL {
         string id PK
         string parcelNumber UK
+        string dagNumber
         string khatianNumber
         string mouza
         string district
         string upazila
+        string surveyType
         float totalArea
         string currentOwner
+        string ownershipShares
+        string provenance
         string status
     }
 
@@ -67,6 +88,8 @@ erDiagram
         string deedType
         int serialOrder
         boolean isVerified
+        string dagNumber
+        string surveyType
     }
 
     MUTATION_RECORD {
@@ -79,6 +102,7 @@ erDiagram
         datetime approvalDate
         string officerName
         string status
+        string dagNumber
     }
 
     FRAUD_ANOMALY {
@@ -91,11 +115,31 @@ erDiagram
         string evidence
         string status
     }
+
+    AUDIT_LOG {
+        string id PK
+        string parcelId FK
+        string userId FK
+        string officerName
+        string action
+        string details
+        datetime timestamp
+    }
 ```
 
 ---
 
-### 3. Detection Engine Algorithmic Complexity
+### 3. Role-Based Access Control (RBAC) Architecture
+
+| Role | Permitted Pages & APIs | Restricted Areas |
+|---|---|---|
+| **Citizen** | Search permitted parcel (`PLOT-DH-1001`), Pre-Registration Risk Check, view clean certificate | Cannot access officer investigation actions, internal dossiers of restricted plots, or admin dashboard |
+| **Land Official** | Full parcel search, Dedicated Investigation Dossier, 5 Detection Rules, Officer Actions (Mark for Review, Field Inquiry, Notes, Forwarding), Print Dossier | Cannot manage user accounts or modify system roles |
+| **Administrator** | All official features + User Management (`/api/admin/users`), account activation/deactivation, role promotion/demotion | System safeguards against self-deactivation |
+
+---
+
+### 4. Detection Engine Algorithmic Complexity
 
 The detection engine (`src/lib/detection-engine.ts`) runs in polynomial time suitable for sub-second on-demand validation:
 - **Double Selling**: $O(D \log D)$ sorting by deed execution date followed by sequential seller interest tracking.
@@ -106,9 +150,9 @@ The detection engine (`src/lib/detection-engine.ts`) runs in polynomial time sui
 
 ---
 
-### 4. Hosting & Continuous Integration
+### 5. Hosting & Continuous Integration
 
 - **Code Repository**: GitHub (`RafiulKabir0/landtrace`)
 - **Hosting Platform**: Vercel Serverless Platform
 - **CI/CD Mechanism**: Git push to `main` automatically triggers production builds, static page pre-rendering, and asset distribution across Edge CDN nodes.
-- **Production URL**: `https://landtrace.vercel.app`
+- **Production URL**: [https://landtrace.vercel.app](https://landtrace.vercel.app)
