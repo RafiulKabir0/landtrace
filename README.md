@@ -2,6 +2,7 @@
 
 ## LandTech 2026
 ## Problem Statement P3 — Fraud & Double-Selling Detection
+### Team ID: LA-73
 
 ### One-Line Idea
 Ownership-chain analysis to detect land fraud, double-selling, and record contradictions in Bangladesh land administration.
@@ -222,11 +223,18 @@ This project was developed with the assistance of **Google Antigravity (Gemini)*
 ---
 
 ### Team & Mentor Details
-- **Project**: LandTrace
+- **Competition**: LandTech Hackathon 2026
 - **Problem Category**: P3 — Fraud & Double-Selling Detection
-- **Hackathon**: LandTech 2026
-- **Team**: Team LandTrace
-- **Lead Developer**: Rafiul Kabir ([@RafiulKabir0](https://github.com/RafiulKabir0))
-- **Mentor**: [Items requiring participant input: Official mentor assignment if designated by LandTech 2026 organizers]
+- **Team Name**: Team LandTrace
+- **Team ID**: LA-73
+- **Team Members**:
+  - **Rafiul Kabir** (Team Leader) — Department of Software Engineering, Student ID: `253-35-162` (GitHub: [@RafiulKabir0](https://github.com/RafiulKabir0))
+  - **Mst Maimuna Mim** (Team Member) — Department of Software Engineering, Student ID: `253-35-103`
+- **Faculty Mentor** *(Assigned by LandTech 2026 Organizing Committee)*:
+  - **Ms. Subarna Akter Liza** — Lecturer, Department of Computer Science & Engineering (CSE)
+  - Institutional Email: `subarna.cse@diu.edu.bd`
+- **Industry Support Mentor** *(Assigned by LandTech 2026 Organizing Committee)*:
+  - **MD. Tahamid Hassan Sadib** — CSE-TECH
+  - Contact / Institutional ID: `251-15-084@diu.edu.bd`
 - **Live Production URL**: [https://landtrace.vercel.app](https://landtrace.vercel.app)
 - **Repository**: [https://github.com/RafiulKabir0/landtrace](https://github.com/RafiulKabir0/landtrace)

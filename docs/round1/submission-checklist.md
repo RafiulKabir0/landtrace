@@ -1,5 +1,16 @@
 # Round 1 Submission Verification Checklist
 ## Project: LandTrace | Problem Statement P3 — Fraud & Double-Selling Detection
+### Team ID: LA-73
+
+---
+
+### Team & Mentor Verification Checklist
+- [x] **Team ID**: `LA-73` verified against official competition registration.
+- [x] **Team Leader**: Rafiul Kabir — Department of Software Engineering; Student ID: `253-35-162`.
+- [x] **Team Member**: Mst Maimuna Mim — Department of Software Engineering; Student ID: `253-35-103`.
+- [x] **Faculty Mentor**: Ms. Subarna Akter Liza — Lecturer, Department of Computer Science & Engineering (CSE), `subarna.cse@diu.edu.bd` (Assigned by Organizing Committee).
+- [x] **Industry Support Mentor**: MD. Tahamid Hassan Sadib — CSE-TECH, `251-15-084@diu.edu.bd` (Assigned by Organizing Committee).
+- [x] **Privacy & Public Safety**: Personal phone numbers omitted from public downloadable documents; institutional emails preserved.
 
 ---
 
@@ -41,7 +52,7 @@
 - [x] **Topological Risk Score**: Calibrated 0–100 heuristic based on contradiction severity.
 - [x] **Transfer Risk Check**: Pre-registration audit simulator for Sub-Registrars.
 - [x] **Persistent Officer Actions**: Mark for review, field inquiry, notes, forwarding, and dossier printing with prototype buffer notice.
-- [x] **Tests Passing**: 24 automated unit tests executed with 100% pass rate (`npm test`).
+- [x] **Tests Passing**: 26 automated unit tests executed with 100% pass rate (`npm test`).
 - [x] **Production Build Clean**: Next.js 16 Turbopack production build succeeds with 0 errors (`npm run build`).
 - [x] **Concept Note**: Available in `concept-note.md` and `concept-note.html`.
 - [x] **Concept Note <= 4 Pages**: Verified PDF (`LandTrace-Concept-Note.pdf`) is exactly 4 pages.

@@ -1,6 +1,6 @@
 # LandTrace: Concept Note
 ## Problem Statement P3 — Fraud & Double-Selling Detection
-### LandTech Hackathon 2026
+### LandTech Hackathon 2026 | Team ID: LA-73
 
 ---
 
@@ -143,7 +143,15 @@ Full nationwide rollout across all 64 districts with centralized Ministry of Lan
 - **Problem Category**: P3 — Fraud & Double-Selling Detection
 - **Hackathon**: LandTech Hackathon 2026
 - **Team Name**: Team LandTrace
-- **Lead Developer**: Rafiul Kabir (GitHub: [@RafiulKabir0](https://github.com/RafiulKabir0))
-- **Mentor Details**: None assigned / Self-directed (Independent submission)
+- **Team ID**: LA-73
+- **Team Members**:
+  - **Rafiul Kabir** (Team Leader) — Department of Software Engineering, Student ID: `253-35-162` (GitHub: [@RafiulKabir0](https://github.com/RafiulKabir0))
+  - **Mst Maimuna Mim** (Team Member) — Department of Software Engineering, Student ID: `253-35-103`
+- **Faculty Mentor** *(Assigned by LandTech 2026 Organizing Committee)*:
+  - **Ms. Subarna Akter Liza** — Lecturer, Department of Computer Science & Engineering (CSE)
+  - Institutional Email: `subarna.cse@diu.edu.bd`
+- **Industry Support Mentor** *(Assigned by LandTech 2026 Organizing Committee)*:
+  - **MD. Tahamid Hassan Sadib** — CSE-TECH
+  - Contact / Institutional ID: `251-15-084@diu.edu.bd`
 - **Live Production URL**: [https://landtrace.vercel.app](https://landtrace.vercel.app)
 - **GitHub Repository**: [https://github.com/RafiulKabir0/landtrace](https://github.com/RafiulKabir0/landtrace)

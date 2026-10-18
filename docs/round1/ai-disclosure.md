@@ -1,5 +1,6 @@
 # AI Tools Disclosure Statement
-## LandTech 2026 — Team LandTrace
+## LandTech 2026 — Problem Statement P3: Fraud & Double-Selling Detection
+### Team: Team LandTrace | Team ID: LA-73
 
 ---
 

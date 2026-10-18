@@ -33,10 +33,15 @@ export default function AboutClient() {
       {/* Main Narrative Card */}
       <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-xs space-y-6">
         <div className="space-y-3">
-          <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-teal-600" />
-            <span>{isBangla ? "ল্যান্ডটেক ২০২৬ ও সমস্যা ৩ (P3)" : "LandTech 2026 & Problem Statement P3"}</span>
-          </h2>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-teal-600" />
+              <span>{isBangla ? "ল্যান্ডটেক ২০২৬ ও সমস্যা ৩ (P3)" : "LandTech 2026 & Problem Statement P3"}</span>
+            </h2>
+            <span className="text-xs bg-teal-50 text-teal-800 font-bold px-2.5 py-0.5 rounded-full border border-teal-200">
+              Team ID: LA-73
+            </span>
+          </div>
           <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
             {isBangla
               ? "ল্যান্ডটেক ২০২৬ (LandTech 2026) জাতীয় উদ্ভাবনী প্রতিযোগিতার সমস্যা ৩ (Fraud & Double-Selling Detection)-এর অধীনে এই সফটওয়্যারটির স্থাপত্য প্রণয়ন করা হয়েছে। বাংলাদেশে সাব-রেজিস্ট্রেশন এবং সহকারী কমিশনার (ভূমি) অফিসের রেকর্ড পৃথকভাবে পরিচালিত হওয়ার কারণে অসাধু ব্যক্তিরা দ্বৈত বিক্রয়, মধ্যবর্তী দলিলবিহীন হস্তান্তর বা ভুয়া নামজারি করার সুযোগ গ্রহণ করত। ল্যান্ডট্রেস এই দুই দপ্তর ও ঐতিহাসিক জরিপ নথির মাঝে একটি বুদ্ধিবৃত্তিক সেতুবন্ধন তৈরি করে।"

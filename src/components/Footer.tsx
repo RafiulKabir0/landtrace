@@ -196,18 +196,18 @@ export default function Footer() {
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-center sm:text-left">
           <p>
             {isBangla
-              ? "© ২০২৬ ল্যান্ডট্রেস (LandTrace) • সর্বস্বত্ব সংরক্ষিত • ল্যান্ডটেক ২০২৬ প্রতিযোগিতার প্রোটোটাইপ"
-              : "© 2026 LandTrace • All Rights Reserved • LandTech 2026 Prototype"}
+              ? "© ২০২৬ ল্যান্ডট্রেস (LandTrace) • টিম আইডি: LA-73 • ল্যান্ডটেক ২০২৬ (সমস্যা ৩)"
+              : "© 2026 LandTrace • Team ID: LA-73 • LandTech 2026 (Problem P3)"}
           </p>
           <p className="text-slate-400">
-            {isBangla ? "প্রধান প্রকৌশলী:" : "Lead Developer:"}{" "}
+            {isBangla ? "টিম ল্যান্ডট্রেস (Team LandTrace) | " : "Team LandTrace | "}
             <a
-              href="https://github.com/RafiulKabir0"
+              href="https://github.com/RafiulKabir0/landtrace"
               target="_blank"
               rel="noreferrer"
               className="font-medium text-teal-400 hover:text-teal-300 transition-colors"
             >
-              Rafiul Kabir (রাফিউল কবির)
+              GitHub: RafiulKabir0/landtrace
             </a>
           </p>
         </div>

@@ -99,8 +99,8 @@ export default function Navbar({ initialUser }: { initialUser?: UserInfo | null 
             <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
             <span className="font-medium text-slate-200">
               {isBangla
-                ? "ল্যান্ডটেক ২০২৬ পাইলট প্রোটোটাইপ • সমস্যা ৩: জালিয়াতি ও দ্বৈত বিক্রয় শনাক্তকরণ"
-                : "LandTech 2026 Pilot Prototype • Problem 3: Fraud & Double-Selling Detection"}
+                ? "ল্যান্ডটেক ২০২৬ পাইলট প্রোটোটাইপ (টিম: LA-73) • সমস্যা ৩: জালিয়াতি ও দ্বৈত বিক্রয় শনাক্তকরণ"
+                : "LandTech 2026 Pilot Prototype (Team: LA-73) • Problem 3: Fraud & Double-Selling Detection"}
             </span>
           </div>
           <div className="text-[11px] text-slate-400">
@@ -126,6 +126,9 @@ export default function Navbar({ initialUser }: { initialUser?: UserInfo | null 
                 </span>
                 <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-teal-50 text-teal-700 border border-teal-200">
                   {isBangla ? "পি৩ সিস্টেম" : "P3 Engine"}
+                </span>
+                <span className="text-[10px] font-bold tracking-wider px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200">
+                  LA-73
                 </span>
               </div>
               <p className="text-xs text-slate-500 font-medium">

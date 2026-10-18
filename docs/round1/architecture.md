@@ -1,5 +1,6 @@
 # LandTrace: Technical Architecture & System Design
-## LandTech 2026 — Problem Statement P3
+## LandTech 2026 — Problem Statement P3: Fraud & Double-Selling Detection
+### Team ID: LA-73
 
 ---
 
@@ -156,3 +157,11 @@ The detection engine (`src/lib/detection-engine.ts`) runs in polynomial time sui
 - **Hosting Platform**: Vercel Serverless Platform
 - **CI/CD Mechanism**: Git push to `main` automatically triggers production builds, static page pre-rendering, and asset distribution across Edge CDN nodes.
 - **Production URL**: [https://landtrace.vercel.app](https://landtrace.vercel.app)
+
+---
+
+### 6. Team & Mentor Identification
+- **Team ID**: `LA-73`
+- **Team Members**: Rafiul Kabir (Team Leader, Dept. of Software Engineering, ID: `253-35-162`), Mst Maimuna Mim (Team Member, Dept. of Software Engineering, ID: `253-35-103`)
+- **Faculty Mentor**: Ms. Subarna Akter Liza — Lecturer, Department of Computer Science & Engineering (CSE), `subarna.cse@diu.edu.bd` (Assigned by Organizing Committee)
+- **Industry Support Mentor**: MD. Tahamid Hassan Sadib — CSE-TECH, `251-15-084@diu.edu.bd` (Assigned by Organizing Committee)

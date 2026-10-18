@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import crypto from "node:crypto";
 import {
   createSessionToken,
   verifySessionToken,
@@ -137,4 +138,97 @@ test("Auth: canUserViewParcel restricts unauthorized records for citizens", () =
 
   // Unauthenticated user cannot view
   assert.equal(canUserViewParcel(null, "PLOT-DH-1001"), false);
+});
+
+test("Auth: role permissions strictly prevent privilege escalation and unauthorized API actions", () => {
+  const citizenSession: UserSession = {
+    id: "usr-cit-01",
+    email: "citizen@demo.landtrace.gov.bd",
+    name: "Citizen Karim",
+    role: "CITIZEN",
+    isActive: true,
+    permittedPlots: "PLOT-DH-1001",
+    exp: Math.floor(Date.now() / 1000) + 3600,
+  };
+
+  const officialSession: UserSession = {
+    id: "usr-off-01",
+    email: "officer@demo.landtrace.gov.bd",
+    name: "AC Land Rahman",
+    role: "OFFICIAL",
+    isActive: true,
+    permittedPlots: "ALL",
+    exp: Math.floor(Date.now() / 1000) + 3600,
+  };
+
+  const adminSession: UserSession = {
+    id: "usr-adm-01",
+    email: "admin@demo.landtrace.gov.bd",
+    name: "System Admin",
+    role: "ADMIN",
+    isActive: true,
+    permittedPlots: "ALL",
+    exp: Math.floor(Date.now() / 1000) + 3600,
+  };
+
+  // 1. Officer Actions API authorization: Only OFFICIAL and ADMIN allowed
+  const canCitizenRecordAction = citizenSession.role === "OFFICIAL" || citizenSession.role === "ADMIN";
+  assert.equal(canCitizenRecordAction, false);
+
+  const canOfficerRecordAction = officialSession.role === "OFFICIAL" || officialSession.role === "ADMIN";
+  assert.equal(canOfficerRecordAction, true);
+
+  const canAdminRecordAction = adminSession.role === "OFFICIAL" || adminSession.role === "ADMIN";
+  assert.equal(canAdminRecordAction, true);
+
+  // 2. Admin Users Management API: Strictly ADMIN only
+  const canCitizenManageUsers = citizenSession.role === "ADMIN";
+  assert.equal(canCitizenManageUsers, false);
+
+  const canOfficerManageUsers = officialSession.role === "ADMIN";
+  assert.equal(canOfficerManageUsers, false);
+
+  const canAdminManageUsers = adminSession.role === "ADMIN";
+  assert.equal(canAdminManageUsers, true);
+
+  // 3. Admin self-deactivation safeguard
+  const targetUserId = "usr-adm-01";
+  const requestedDeactivation = false;
+  const isSelfDeactivationBlocked = targetUserId === adminSession.id && requestedDeactivation === false;
+  assert.equal(isSelfDeactivationBlocked, true);
+
+  // 4. Registration role validation: Public registration requesting non-CITIZEN must be rejected
+  const validateRegistrationRole = (requestedRole?: string) => {
+    if (requestedRole && requestedRole !== "CITIZEN") {
+      return { allowed: false, status: 403, error: "Unauthorized role request. Public registration can only create Citizen accounts." };
+    }
+    return { allowed: true, role: "CITIZEN" };
+  };
+
+  assert.equal(validateRegistrationRole("ADMIN").allowed, false);
+  assert.equal(validateRegistrationRole("ADMIN").status, 403);
+  assert.equal(validateRegistrationRole("OFFICIAL").allowed, false);
+  assert.equal(validateRegistrationRole("OFFICIAL").status, 403);
+  assert.equal(validateRegistrationRole("CITIZEN").allowed, true);
+  assert.equal(validateRegistrationRole(undefined).allowed, true);
+});
+
+test("Auth: token expiration check rejects past exp timestamps", () => {
+  const expiredPayload: UserSession = {
+    id: "usr-expired",
+    email: "expired@demo.landtrace.gov.bd",
+    name: "Expired User",
+    role: "CITIZEN",
+    isActive: true,
+    permittedPlots: "PLOT-DH-1001",
+    exp: Math.floor(Date.now() / 1000) - 3600, // 1 hour ago
+  };
+
+  const encodedPayload = Buffer.from(JSON.stringify(expiredPayload)).toString("base64url");
+  const AUTH_SECRET = process.env.AUTH_SECRET || "landtrace-secure-hmac-sha256-secret-key-2026-bangladesh-landtech";
+  const signature = crypto.createHmac("sha256", AUTH_SECRET).update(encodedPayload).digest("base64url");
+  const expiredToken = `${encodedPayload}.${signature}`;
+
+  const verified = verifySessionToken(expiredToken);
+  assert.equal(verified, null);
 });

@@ -160,12 +160,12 @@ export default function HomeClient() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             {/* Left Content */}
             <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-100/80 border border-teal-200 text-teal-800 text-xs font-semibold shadow-xs">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-100/80 border border-teal-200 text-teal-800 text-xs font-semibold shadow-xs">
                 <Sparkles className="w-3.5 h-3.5 text-teal-600" />
                 <span>
                   {isBangla
-                    ? "ল্যান্ডটেক ২০২৬: উদ্ভাবনী ভূমি রেকর্ড নিরাপত্তা প্ল্যাটফর্ম"
-                    : "LandTech 2026: Land Record Integrity & Fraud Detection"}
+                    ? "ল্যান্ডটেক ২০২৬ (দল: LA-73) | P3: ভুয়া ও দ্বৈত বিক্রয় শনাক্তকরণ"
+                    : "LandTech 2026 (Team: LA-73) | P3: Fraud & Double-Selling Detection"}
                 </span>
               </div>
 

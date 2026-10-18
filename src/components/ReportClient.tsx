@@ -66,8 +66,8 @@ export default function ReportClient({ parcel, audit }: Props) {
           </div>
           <p className="text-xs font-bold uppercase tracking-widest text-slate-600">
             {isBangla
-              ? "ল্যান্ডটেক ২০২৬ পাইলট প্রকল্প • ল্যান্ডট্রেস"
-              : "LandTech 2026 Pilot Prototype • LandTrace"}
+              ? "ল্যান্ডটেক ২০২৬ পাইলট প্রকল্প • ল্যান্ডট্রেস (টিম: LA-73)"
+              : "LandTech 2026 Pilot Prototype • LandTrace (Team: LA-73)"}
           </p>
           <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
             {isBangla

@@ -1,15 +1,17 @@
 # LandTrace: Round 1 Video Demonstration Script
-## Target Duration: 2 Minutes 30 Seconds (Strict Limit: Under 3 Minutes)
+## LandTech 2026 | Problem Statement P3: Fraud & Double-Selling Detection
+### Team: Team LandTrace | Team ID: LA-73
+#### Target Duration: 2 Minutes 30 Seconds (Strict Limit: Under 3 Minutes)
 
 ---
 
 ### Segment 1: Introduction & Multi-Page Government Architecture (0:00 – 0:35)
-- **Visual**: Show LandTrace live at `https://landtrace.vercel.app` with the clean, authoritative government-service aesthetic (white/slate-50 background, emerald/teal accents), government header, and Neon PostgreSQL indicator.
+- **Visual**: Show LandTrace live at `https://landtrace.vercel.app` with the clean, authoritative government-service aesthetic (white/slate-50 background, emerald/teal accents), government header with Team ID badge (`LA-73`), and Neon PostgreSQL indicator.
 - **Action**:
   - Show that the entire website defaults to **বাংলা (Bangla)**. Click the compact `বাংলা | English` toggle in the navigation bar to demonstrate zero-lag language switching, then switch back to Bangla.
   - Scroll down the public homepage (`/`) to highlight the two prominent actions: **"জমির রেকর্ড যাচাই করুন"** and **"সেবাসমূহ দেখুন"**, followed by the 5 P3 detection capabilities, the 4-step workflow, and the 3 distinct role entry portals.
 - **Narrator**:
-  > *"Welcome to LandTrace — an automated Ownership Chain Contradiction and Fraud Detection System built for LandTech 2026, Problem Statement P3. In Bangladesh, land disputes generate protracted litigation because Sub-Registry deed archives and AC-Land mutation khatians operate in departmental silos. LandTrace addresses this through a dedicated, multi-page government service architecture inspired by land.gov.bd. The application defaults to natural Bangla with an instant English toggle. All records shown are 100% synthetic demonstration data."*
+  > *"Welcome to LandTrace — presented by Team LA-73 for LandTech 2026, Problem Statement P3: Fraud & Double-Selling Detection. In Bangladesh, land disputes generate protracted litigation because Sub-Registry deed archives and AC-Land mutation khatians operate in departmental silos. LandTrace addresses this through a dedicated, multi-page government service architecture inspired by land.gov.bd. The application defaults to natural Bangla with an instant English toggle. All records shown are 100% synthetic demonstration data."*
 
 ---
 

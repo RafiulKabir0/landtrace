@@ -60,19 +60,85 @@ export default function ContactClient() {
                 <ShieldCheck className="w-6 h-6 text-emerald-100" />
               </div>
               <div>
-                <h2 className="font-bold text-slate-900 text-base">Rafiul Kabir</h2>
+                <div className="flex items-center gap-2">
+                  <h2 className="font-bold text-slate-900 text-base">Team LandTrace</h2>
+                  <span className="text-[10px] bg-teal-50 text-teal-800 font-bold px-2 py-0.5 rounded-full border border-teal-200">
+                    ID: LA-73
+                  </span>
+                </div>
                 <p className="text-xs text-teal-700 font-medium">
-                  {isBangla ? "প্রধান প্রকৌশলী ও গবেষক" : "Lead Full-Stack & Security Engineer"}
+                  {isBangla ? "ল্যান্ডটেক ২০২৬ প্রতিযোগী দল" : "LandTech 2026 Competition Team"}
                 </p>
-                <span className="text-[10px] text-slate-400">LandTech 2026 Developer</span>
+                <span className="text-[10px] text-slate-400">Problem P3: Fraud & Double-Selling Detection</span>
               </div>
             </div>
 
-            <div className="space-y-3.5 text-xs">
+            {/* Team Members */}
+            <div className="space-y-3 pb-4 border-b border-slate-100">
+              <span className="text-xs font-bold text-slate-800 block uppercase tracking-wider text-[11px]">
+                {isBangla ? "দলীয় সদস্যবৃন্দ (Members)" : "Team Members"}
+              </span>
+              <div className="space-y-2 text-xs">
+                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-150">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-slate-900">Rafiul Kabir</span>
+                    <span className="text-[9px] bg-teal-100 text-teal-800 font-bold px-1.5 py-0.5 rounded">
+                      {isBangla ? "দলনেতা / LEADER" : "LEADER"}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-600 mt-0.5">
+                    ID: 253-35-162 &bull; Department of Software Engineering
+                  </p>
+                </div>
+                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-150">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-slate-900">Mst Maimuna Mim</span>
+                    <span className="text-[9px] bg-slate-200 text-slate-700 font-bold px-1.5 py-0.5 rounded">
+                      {isBangla ? "সদস্য / MEMBER" : "MEMBER"}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-600 mt-0.5">
+                    ID: 253-35-103 &bull; Department of Software Engineering
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Mentors */}
+            <div className="space-y-3 pb-4 border-b border-slate-100">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-slate-800 uppercase tracking-wider text-[11px]">
+                  {isBangla ? "মেন্টরবৃন্দ (Mentors)" : "Mentors"}
+                </span>
+                <span className="text-[9px] text-slate-500 italic">
+                  {isBangla ? "কমিটি কর্তৃক নিযুক্ত" : "Assigned by Committee"}
+                </span>
+              </div>
+              <div className="space-y-2 text-xs">
+                <div className="p-2.5 rounded-xl bg-teal-50/50 border border-teal-100">
+                  <div className="text-[10px] text-teal-800 font-semibold uppercase">
+                    {isBangla ? "ফ্যাকাল্টি মেন্টর" : "Faculty Mentor"}
+                  </div>
+                  <div className="font-bold text-slate-900">Ms. Subarna Akter Liza</div>
+                  <div className="text-[11px] text-slate-600">Lecturer &bull; CSE</div>
+                  <div className="text-[11px] text-teal-700 font-mono mt-0.5">subarna.cse@diu.edu.bd</div>
+                </div>
+                <div className="p-2.5 rounded-xl bg-teal-50/50 border border-teal-100">
+                  <div className="text-[10px] text-teal-800 font-semibold uppercase">
+                    {isBangla ? "ইন্ডাস্ট্রি সাপোর্ট মেন্টর" : "Industry Support Mentor"}
+                  </div>
+                  <div className="font-bold text-slate-900">MD. Tahamid Hassan Sadib</div>
+                  <div className="text-[11px] text-slate-600">CSE-TECH</div>
+                  <div className="text-[11px] text-teal-700 font-mono mt-0.5">251-15-084@diu.edu.bd</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3 text-xs">
               <div className="flex items-start gap-3">
                 <GithubIcon className="w-4 h-4 text-slate-600 shrink-0 mt-0.5" />
                 <div>
-                  <span className="font-semibold text-slate-700 block">GitHub Profile & Repo:</span>
+                  <span className="font-semibold text-slate-700 block">GitHub Repository:</span>
                   <a
                     href="https://github.com/RafiulKabir0/landtrace"
                     target="_blank"
@@ -104,12 +170,12 @@ export default function ContactClient() {
 
             <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-[11px] text-slate-600 space-y-1">
               <div className="font-semibold text-slate-800">
-                {isBangla ? "প্রতিযোগিতা যাচাইকরণ" : "Competition Verification"}
+                {isBangla ? "প্রতিযোগিতা স্বীকৃতি ও ঘোষণা" : "Competition Verification & Notice"}
               </div>
               <p>
                 {isBangla
-                  ? "এই প্রকল্পটি ল্যান্ডটেক ২০২৬-এর সমস্যা ৩ (P3: Fraud & Double-Selling Detection)-এর জন্য স্বকীয়ভাবে প্রণীত।"
-                  : "Original solution submission for LandTech 2026 Problem Statement P3."}
+                  ? "ল্যান্ডটেক ২০২৬ সমস্যা ৩ (P3: Fraud & Double-Selling Detection)-এর অফিসিয়াল রেজিস্ট্রেশন অনুযায়ী দলীয় তথ্য ও মেন্টর সমন্বয় সংরক্ষিত।"
+                  : "Official registration details and assigned mentors verified per LandTech 2026 records."}
               </p>
             </div>
           </div>
