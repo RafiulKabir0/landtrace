@@ -91,13 +91,45 @@ The database model (`prisma/schema.prisma`) represents:
 
 ---
 
+### Five-Layer User Experience Architecture
+
+1. **Layer 1: Public Homepage (পাবলিক হোমপেজ)**
+   - First-time visitors immediately grasp the platform's purpose within 10–15 seconds.
+   - LandTrace branding, Problem P3 badge, and primary action: **“জমির রেকর্ড যাচাই করুন”**.
+   - **Public Quick Search**: Instant verification by Dag, Khatian, Mouza, or Deed with 6 sample query chips.
+   - Three-step verification process cards (Search → Title Chain Matching → Fraud Detection).
+   - Five compact P3 detection capability summary cards with automated test metrics (24/24 passing).
+   - Three Role Entry Portals (নাগরিক, ভূমি কর্মকর্তা, প্রশাসক) with 1-click test triggers.
+   - Synthetic demonstration data notice and government-service style 4-column footer.
+
+2. **Layer 2: Authentication (নিরাপদ প্রবেশদ্বার)**
+   - Clear entry points: **নাগরিক লগইন**, **ভূমি কর্মকর্তা লগইন**, **প্রশাসক লগইন**.
+   - Role-switching demo credential auto-fill for evaluation speed.
+   - Password visibility control (`Eye` / `EyeOff` toggle).
+   - Public self-registration is strictly restricted to Citizen accounts on both client and server (`/api/auth/register`).
+   - Server-side HMAC-SHA256 session token cookies and bcrypt password hashing.
+
+3. **Layer 3: Role-Based Dashboards (ভূমিকাভিত্তিক ড্যাশবোর্ড)**
+   - **Citizen (নাগরিক)**: Restricted strictly to designated parcel `PLOT-DH-1001` and the Pre-Registration Risk Check Simulator. Server-side API protection prevents unauthorized record access.
+   - **Land Official (ভূমি কর্মকর্তা)**: Complete registry search, forensic dossier inspection, and decision-support actions (Mark for Review, Field Inquiry, Investigation Notes, Forward to Higher Authority).
+   - **Administrator (সিস্টেম অ্যাডমিন)**: Account lifecycle management, role assignment, and security audit trail oversight.
+
+4. **Layer 4: Land Record Verification & Forensic Investigation (রেকর্ড যাচাই ও তদন্ত)**
+   - **Survey Record History (CS, SA, RS, BS)**: Dedicated cadastral survey card with clear disclaimer: *Cadastral surveys recorded physical possession at the time of survey; they do not automatically prove continuous legal ownership title.*
+   - **Ownership Transfer Chain**: Distinct chronological chain of registered sale deeds, transfer acreages, and approved AC (Land) mutation orders.
+   - Real-time contradiction analysis across all five P3 algorithmic rules.
+
+5. **Layer 5: Reports & Decision-Support Audit History (তদন্ত রিপোর্ট ও অডিট ট্রেইল)**
+   - Printable official dossier with explicit area units (শতক/decimals) and survey provenance.
+   - Timestamped officer action trail stored in the prototype decision-support buffer.
+
+---
+
 ### User Experience & Localization
-- **Default Language**: বাংলা (Bangla) by default throughout the entire application, utilizing natural Bangladesh land administration terminology.
-- **Instant Language Toggle**: Small `বাংলা | English` toggle in header with instant translation (no page reload) and persistent preference via `localStorage`.
-- **Light Theme**: Clean, authoritative, government-style white/slate-50 aesthetic.
-- **Main Dashboard**: Simple search, verification action, summary metrics, and parcel cards with clear next steps.
-- **Dedicated Investigation View**: Deep title inspection, visual chronological timeline, forensic evidence, and official decision-support actions.
-- **Responsive Layout**: Designed for mobile and desktop screens.
+- **Default Language**: বাংলা (Bangla) by default across all pages, forms, validation messages, and reports.
+- **Instant Language Toggle**: Small `বাংলা | English` toggle in header with instant transition and persistent preference via `localStorage`.
+- **Light Theme**: Clean, authoritative, government-service-inspired white/slate-50 aesthetic with restrained emerald/teal accents.
+- **Responsive Layout**: Fluid design tailored for mobile phones, tablets, and desktop workstations.
 
 ---
 
