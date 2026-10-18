@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
+import Image from "next/image";
 import {
   ShieldAlert,
   Search,
@@ -25,11 +26,14 @@ import {
   ShieldCheck,
   LogOut,
   LogIn,
-  UserPlus,
   Building2,
   Home,
   Eye,
   EyeOff,
+  BookOpen,
+  Phone,
+  ExternalLink,
+  Lock,
 } from "lucide-react";
 
 import { auditParcel, ParcelRecord } from "@/lib/detection-engine";
@@ -129,10 +133,29 @@ export default function LandTraceClient({ initialParcels, initialSession }: Prop
     return null;
   });
 
-  // Default to Layer 1 Public Homepage for new visitors, or Dashboard if authenticated
+  // Supported Navigation Views across the 5 Layers
   const [activeTab, setActiveTab] = useState<
-    "HOME" | "DASHBOARD" | "INVESTIGATION" | "TRANSFER_CHECK" | "ALERTS" | "ADMIN"
+    | "HOME"
+    | "LOGIN_CITIZEN"
+    | "LOGIN_OFFICIAL"
+    | "LOGIN_ADMIN"
+    | "DASHBOARD"
+    | "INVESTIGATION"
+    | "TRANSFER_CHECK"
+    | "ALERTS"
+    | "ADMIN"
   >(() => (initialSession ? "DASHBOARD" : "HOME"));
+
+  const navigateHomeSection = (sectionId: string) => {
+    if (activeTab !== "HOME") {
+      setActiveTab("HOME");
+      setTimeout(() => {
+        document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" });
+      }, 50);
+    } else {
+      document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<"ALL" | "ACTIVE" | "FLAGGED">("ALL");
@@ -688,8 +711,48 @@ export default function LandTraceClient({ initialParcels, initialSession }: Prop
               </div>
             </div>
 
-            {/* Officer & Controls */}
+            {/* Navigation & Controls */}
             <div className="flex items-center gap-2.5 flex-wrap">
+              {/* Public Menu (when not logged in) */}
+              {!session && (
+                <div className="hidden lg:flex items-center gap-1 text-xs font-semibold text-slate-600 mr-1">
+                  <button
+                    onClick={() => setActiveTab("HOME")}
+                    className={`px-2.5 py-1.5 rounded-lg transition-colors ${
+                      activeTab === "HOME"
+                        ? "text-teal-800 bg-teal-50"
+                        : "hover:text-slate-900 hover:bg-slate-100"
+                    }`}
+                  >
+                    {t.navHome}
+                  </button>
+                  <button
+                    onClick={() => navigateHomeSection("services-section")}
+                    className="px-2.5 py-1.5 rounded-lg hover:text-slate-900 hover:bg-slate-100 transition-colors"
+                  >
+                    {t.navServices}
+                  </button>
+                  <button
+                    onClick={() => navigateHomeSection("about-section")}
+                    className="px-2.5 py-1.5 rounded-lg hover:text-slate-900 hover:bg-slate-100 transition-colors"
+                  >
+                    {t.navAbout}
+                  </button>
+                  <button
+                    onClick={() => navigateHomeSection("guide-section")}
+                    className="px-2.5 py-1.5 rounded-lg hover:text-slate-900 hover:bg-slate-100 transition-colors"
+                  >
+                    {t.navGuide}
+                  </button>
+                  <button
+                    onClick={() => navigateHomeSection("contact-section")}
+                    className="px-2.5 py-1.5 rounded-lg hover:text-slate-900 hover:bg-slate-100 transition-colors"
+                  >
+                    {t.navContact}
+                  </button>
+                </div>
+              )}
+
               {/* Authenticated User / Role Display */}
               {session ? (
                 <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-teal-50/80 border border-teal-200 text-xs text-teal-900">
@@ -711,20 +774,48 @@ export default function LandTraceClient({ initialParcels, initialSession }: Prop
                   </button>
                 </div>
               ) : (
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5">
                   <button
-                    onClick={() => setShowAuthModal("LOGIN")}
-                    className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-teal-700 hover:bg-teal-800 text-white text-xs font-semibold shadow-xs"
+                    onClick={() => {
+                      fillDemoCredentials("CITIZEN");
+                      setActiveTab("LOGIN_CITIZEN");
+                    }}
+                    className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all ${
+                      activeTab === "LOGIN_CITIZEN"
+                        ? "bg-teal-800 text-white shadow-xs"
+                        : "bg-teal-700 hover:bg-teal-800 text-white"
+                    }`}
                   >
-                    <LogIn className="h-3.5 w-3.5" />
-                    <span>{t.loginBtn}</span>
+                    <UserCheck className="h-3 w-3" />
+                    <span>{t.authTabCitizen}</span>
                   </button>
                   <button
-                    onClick={() => setShowAuthModal("REGISTER")}
-                    className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold border border-slate-200"
+                    onClick={() => {
+                      fillDemoCredentials("OFFICIAL");
+                      setActiveTab("LOGIN_OFFICIAL");
+                    }}
+                    className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all ${
+                      activeTab === "LOGIN_OFFICIAL"
+                        ? "bg-slate-800 text-white shadow-xs"
+                        : "bg-white hover:bg-slate-100 text-slate-700 border border-slate-300"
+                    }`}
                   >
-                    <UserPlus className="h-3.5 w-3.5" />
-                    <span>{t.registerBtn}</span>
+                    <Building2 className="h-3 w-3 text-teal-700" />
+                    <span>{t.authTabOfficial}</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      fillDemoCredentials("ADMIN");
+                      setActiveTab("LOGIN_ADMIN");
+                    }}
+                    className={`hidden sm:flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all ${
+                      activeTab === "LOGIN_ADMIN"
+                        ? "bg-slate-800 text-white shadow-xs"
+                        : "bg-white hover:bg-slate-100 text-slate-700 border border-slate-300"
+                    }`}
+                  >
+                    <ShieldCheck className="h-3 w-3 text-teal-700" />
+                    <span>{t.authTabAdmin}</span>
                   </button>
                 </div>
               )}
@@ -840,103 +931,196 @@ export default function LandTraceClient({ initialParcels, initialSession }: Prop
       <div className="bg-white border-b border-slate-200 shadow-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <nav className="flex space-x-2 py-2 overflow-x-auto">
-            {/* Layer 1: Public Homepage */}
-            <button
-              onClick={() => setActiveTab("HOME")}
-              className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap leading-normal ${
-                activeTab === "HOME"
-                  ? "bg-teal-700 text-white shadow-xs"
-                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
-              }`}
-            >
-              <Home className="h-3.5 w-3.5" />
-              <span>{t.tabHome}</span>
-            </button>
+            {/* If in role login view */}
+            {activeTab === "LOGIN_CITIZEN" ||
+            activeTab === "LOGIN_OFFICIAL" ||
+            activeTab === "LOGIN_ADMIN" ? (
+              <div className="flex items-center justify-between w-full text-xs">
+                <button
+                  onClick={() => setActiveTab("HOME")}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-slate-600 hover:text-teal-800 hover:bg-slate-100 font-semibold"
+                >
+                  <ArrowLeft className="h-3.5 w-3.5" />
+                  <span>{t.backToHomeBtn}</span>
+                </button>
+                <div className="flex items-center gap-3">
+                  <span className="font-semibold text-slate-700">
+                    {activeTab === "LOGIN_CITIZEN"
+                      ? `👤 ${t.loginCitizenTitle}`
+                      : activeTab === "LOGIN_OFFICIAL"
+                      ? `🏛️ ${t.loginOfficialTitle}`
+                      : `🛡️ ${t.loginAdminTitle}`}
+                  </span>
+                  <div className="hidden sm:flex items-center gap-2 border-l pl-3 border-slate-200">
+                    <button
+                      onClick={() => {
+                        fillDemoCredentials("CITIZEN");
+                        setActiveTab("LOGIN_CITIZEN");
+                      }}
+                      className={`px-2 py-1 rounded text-[11px] font-semibold ${
+                        activeTab === "LOGIN_CITIZEN"
+                          ? "bg-teal-50 text-teal-800 font-bold"
+                          : "text-slate-500 hover:text-slate-800"
+                      }`}
+                    >
+                      {lang === "bn" ? "নাগরিক" : "Citizen"}
+                    </button>
+                    <button
+                      onClick={() => {
+                        fillDemoCredentials("OFFICIAL");
+                        setActiveTab("LOGIN_OFFICIAL");
+                      }}
+                      className={`px-2 py-1 rounded text-[11px] font-semibold ${
+                        activeTab === "LOGIN_OFFICIAL"
+                          ? "bg-teal-50 text-teal-800 font-bold"
+                          : "text-slate-500 hover:text-slate-800"
+                      }`}
+                    >
+                      {lang === "bn" ? "কর্মকর্তা" : "Officer"}
+                    </button>
+                    <button
+                      onClick={() => {
+                        fillDemoCredentials("ADMIN");
+                        setActiveTab("LOGIN_ADMIN");
+                      }}
+                      className={`px-2 py-1 rounded text-[11px] font-semibold ${
+                        activeTab === "LOGIN_ADMIN"
+                          ? "bg-teal-50 text-teal-800 font-bold"
+                          : "text-slate-500 hover:text-slate-800"
+                      }`}
+                    >
+                      {lang === "bn" ? "প্রশাসক" : "Admin"}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ) : !session ? (
+              // Public View
+              <div className="flex items-center gap-2 text-xs overflow-x-auto w-full py-0.5">
+                <button
+                  onClick={() => setActiveTab("HOME")}
+                  className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap leading-normal ${
+                    activeTab === "HOME"
+                      ? "bg-teal-700 text-white shadow-xs"
+                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                  }`}
+                >
+                  <Home className="h-3.5 w-3.5" />
+                  <span>{t.tabHome}</span>
+                </button>
+                <button
+                  onClick={() => navigateHomeSection("services-section")}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 whitespace-nowrap"
+                >
+                  <Layers className="h-3.5 w-3.5 text-teal-700" />
+                  <span>{t.navServices}</span>
+                </button>
+                <button
+                  onClick={() => navigateHomeSection("about-section")}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 whitespace-nowrap"
+                >
+                  <Info className="h-3.5 w-3.5 text-teal-700" />
+                  <span>{t.navAbout}</span>
+                </button>
+                <button
+                  onClick={() => navigateHomeSection("guide-section")}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 whitespace-nowrap"
+                >
+                  <BookOpen className="h-3.5 w-3.5 text-teal-700" />
+                  <span>{t.navGuide}</span>
+                </button>
+                <button
+                  onClick={() => navigateHomeSection("contact-section")}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 whitespace-nowrap"
+                >
+                  <Phone className="h-3.5 w-3.5 text-teal-700" />
+                  <span>{t.navContact}</span>
+                </button>
+              </div>
+            ) : (
+              // Authenticated View
+              <>
+                <button
+                  onClick={() => setActiveTab("HOME")}
+                  className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap leading-normal ${
+                    activeTab === "HOME"
+                      ? "bg-teal-700 text-white shadow-xs"
+                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                  }`}
+                >
+                  <Home className="h-3.5 w-3.5" />
+                  <span>{t.tabHome}</span>
+                </button>
 
-            {/* Layer 3: Role Dashboard */}
-            <button
-              onClick={() => {
-                if (session) {
-                  setActiveTab("DASHBOARD");
-                } else {
-                  fillDemoCredentials("CITIZEN");
-                  setShowAuthModal("LOGIN");
-                }
-              }}
-              className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap leading-normal ${
-                activeTab === "DASHBOARD"
-                  ? "bg-teal-700 text-white shadow-xs"
-                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
-              }`}
-            >
-              <Layers className="h-3.5 w-3.5" />
-              <span>{t.tabDashboard}</span>
-            </button>
+                <button
+                  onClick={() => setActiveTab("DASHBOARD")}
+                  className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap leading-normal ${
+                    activeTab === "DASHBOARD"
+                      ? "bg-teal-700 text-white shadow-xs"
+                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                  }`}
+                >
+                  <Layers className="h-3.5 w-3.5" />
+                  <span>{session.role === "CITIZEN" ? t.citizenMyPlot : t.tabDashboard}</span>
+                </button>
 
-            {/* Layer 4 & 5: Forensic Investigation Dossier */}
-            <button
-              onClick={() => {
-                if (session) {
-                  setActiveTab("INVESTIGATION");
-                } else {
-                  fillDemoCredentials("OFFICIAL");
-                  setShowAuthModal("LOGIN");
-                }
-              }}
-              className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap leading-normal ${
-                activeTab === "INVESTIGATION"
-                  ? "bg-teal-700 text-white shadow-xs"
-                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
-              }`}
-            >
-              <FileText className="h-3.5 w-3.5" />
-              <span>{t.tabInvestigation}</span>
-            </button>
+                {(session.role === "OFFICIAL" || session.role === "ADMIN") && (
+                  <button
+                    onClick={() => setActiveTab("INVESTIGATION")}
+                    className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap leading-normal ${
+                      activeTab === "INVESTIGATION"
+                        ? "bg-teal-700 text-white shadow-xs"
+                        : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                    }`}
+                  >
+                    <FileText className="h-3.5 w-3.5" />
+                    <span>{t.tabInvestigation}</span>
+                  </button>
+                )}
 
-            {/* Pre-Registration Transfer Check Simulator */}
-            <button
-              onClick={() => setActiveTab("TRANSFER_CHECK")}
-              className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap leading-normal ${
-                activeTab === "TRANSFER_CHECK"
-                  ? "bg-teal-700 text-white shadow-xs"
-                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
-              }`}
-            >
-              <FileCheck2 className="h-3.5 w-3.5" />
-              <span>{t.tabTransferCheck}</span>
-            </button>
+                <button
+                  onClick={() => setActiveTab("TRANSFER_CHECK")}
+                  className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap leading-normal ${
+                    activeTab === "TRANSFER_CHECK"
+                      ? "bg-teal-700 text-white shadow-xs"
+                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                  }`}
+                >
+                  <FileCheck2 className="h-3.5 w-3.5" />
+                  <span>{t.tabTransferCheck}</span>
+                </button>
 
-            {/* Officer & Admin Only: All Contradictions Overview */}
-            {(session?.role === "OFFICIAL" || session?.role === "ADMIN") && (
-              <button
-                onClick={() => setActiveTab("ALERTS")}
-                className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap leading-normal ${
-                  activeTab === "ALERTS"
-                    ? "bg-teal-700 text-white shadow-xs"
-                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
-                }`}
-              >
-                <ShieldAlert className="h-3.5 w-3.5" />
-                <span>{t.tabAlerts}</span>
-                <span className="px-1.5 py-0.2 rounded-full bg-red-100 text-red-700 font-bold text-[10px]">
-                  {formatNumber(summaryMetrics.flagged, lang)}
-                </span>
-              </button>
-            )}
+                {(session.role === "OFFICIAL" || session.role === "ADMIN") && (
+                  <button
+                    onClick={() => setActiveTab("ALERTS")}
+                    className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap leading-normal ${
+                      activeTab === "ALERTS"
+                        ? "bg-teal-700 text-white shadow-xs"
+                        : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                    }`}
+                  >
+                    <ShieldAlert className="h-3.5 w-3.5" />
+                    <span>{t.tabAlerts}</span>
+                    <span className="px-1.5 py-0.2 rounded-full bg-red-100 text-red-700 font-bold text-[10px]">
+                      {formatNumber(summaryMetrics.flagged, lang)}
+                    </span>
+                  </button>
+                )}
 
-            {/* Admin-only tab: User & Security Management */}
-            {session?.role === "ADMIN" && (
-              <button
-                onClick={() => setActiveTab("ADMIN")}
-                className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap leading-normal ${
-                  activeTab === "ADMIN"
-                    ? "bg-teal-700 text-white shadow-xs"
-                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
-                }`}
-              >
-                <Building2 className="h-3.5 w-3.5" />
-                <span>{t.tabAdmin}</span>
-              </button>
+                {session.role === "ADMIN" && (
+                  <button
+                    onClick={() => setActiveTab("ADMIN")}
+                    className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap leading-normal ${
+                      activeTab === "ADMIN"
+                        ? "bg-teal-700 text-white shadow-xs"
+                        : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                    }`}
+                  >
+                    <Building2 className="h-3.5 w-3.5" />
+                    <span>{t.tabAdmin}</span>
+                  </button>
+                )}
+              </>
             )}
           </nav>
         </div>
@@ -947,43 +1131,83 @@ export default function LandTraceClient({ initialParcels, initialSession }: Prop
         {/* TAB 0: LAYER 1 — PUBLIC HOMEPAGE */}
         {activeTab === "HOME" && (
           <div className="space-y-10 py-2">
-            {/* 1. HERO SECTION */}
-            <section className="bg-gradient-to-b from-white to-slate-50 border border-slate-200/90 rounded-3xl p-6 sm:p-10 shadow-sm text-center space-y-5">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-xs font-semibold">
-                <Sparkles className="h-3.5 w-3.5 text-teal-600" />
-                <span>{t.homeHeroBadge}</span>
-              </div>
+            {/* 1. HERO SECTION (2-COLUMN BANGLADESH LAND VISUAL) */}
+            <section className="bg-gradient-to-b from-white to-slate-50 border border-slate-200/90 rounded-3xl p-6 sm:p-8 lg:p-10 shadow-sm">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                {/* Left Column: Text & Primary Actions */}
+                <div className="lg:col-span-7 space-y-5 text-left">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-xs font-semibold">
+                    <Sparkles className="h-3.5 w-3.5 text-teal-600 flex-shrink-0" />
+                    <span>{t.homeHeroBadge}</span>
+                  </div>
 
-              <div className="max-w-3xl mx-auto space-y-3">
-                <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight leading-snug">
-                  {t.homeHeroTitle}
-                </h1>
-                <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl mx-auto">
-                  {t.homeHeroSubtitle}
-                </p>
-              </div>
+                  <div className="space-y-3">
+                    <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight leading-snug">
+                      {t.homeHeroTitle}
+                    </h1>
+                    <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                      {t.homeHeroSubtitle}
+                    </p>
+                  </div>
 
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
-                <button
-                  onClick={() => {
-                    const el = document.getElementById("public-search-section");
-                    el?.scrollIntoView({ behavior: "smooth" });
-                  }}
-                  className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-bold text-sm shadow-sm transition-all w-full sm:w-auto"
-                >
-                  <Search className="h-4 w-4" />
-                  <span>{t.homeVerifyCta}</span>
-                </button>
-                <button
-                  onClick={() => {
-                    const el = document.getElementById("portals-section");
-                    el?.scrollIntoView({ behavior: "smooth" });
-                  }}
-                  className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-semibold text-sm border border-slate-300 shadow-xs transition-all w-full sm:w-auto"
-                >
-                  <ShieldCheck className="h-4 w-4 text-teal-700" />
-                  <span>{t.homeExploreRolesCta}</span>
-                </button>
+                  <div className="flex flex-col sm:flex-row items-center gap-3 pt-1">
+                    <button
+                      onClick={() => {
+                        const el = document.getElementById("public-search-section");
+                        el?.scrollIntoView({ behavior: "smooth" });
+                      }}
+                      className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-bold text-sm shadow-sm transition-all w-full sm:w-auto"
+                    >
+                      <Search className="h-4 w-4" />
+                      <span>{t.homeVerifyCta}</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        const el = document.getElementById("services-section");
+                        el?.scrollIntoView({ behavior: "smooth" });
+                      }}
+                      className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-semibold text-sm border border-slate-300 shadow-xs transition-all w-full sm:w-auto"
+                    >
+                      <Layers className="h-4 w-4 text-teal-700" />
+                      <span>{t.heroSecondaryCta}</span>
+                    </button>
+                  </div>
+
+                  {/* Trust micro-badges */}
+                  <div className="flex items-center gap-4 text-[11px] text-slate-500 pt-2 border-t border-slate-100 flex-wrap">
+                    <span className="flex items-center gap-1.5 font-medium">
+                      <ShieldCheck className="h-3.5 w-3.5 text-teal-700" />
+                      {lang === "bn" ? "৫টি অ্যালগরিদমিক ডিটেকশন মডেল" : "5 Algorithmic Detection Models"}
+                    </span>
+                    <span className="flex items-center gap-1.5 font-medium">
+                      <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
+                      {lang === "bn" ? "১০০% নিরাপদ সার্ভার নীতি" : "100% Server Role Validation"}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Right Column: Bangladesh Land / Cadastral Graphic */}
+                <div className="lg:col-span-5">
+                  <div className="relative rounded-2xl overflow-hidden border border-teal-200/80 shadow-md bg-white p-2">
+                    <div className="relative aspect-4/3 w-full overflow-hidden rounded-xl bg-slate-100">
+                      <Image
+                        src="/bangladesh_land_hero.jpg"
+                        alt={lang === "bn" ? "বাংলাদেশ ডিজিটাল ক্যাডাস্ট্রাল জরিপ ও ভূমি স্বত্ব চিত্র" : "Bangladesh Digital Cadastral Land Graphic"}
+                        fill
+                        className="object-cover object-center"
+                        priority
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent flex items-end p-4">
+                        <span className="text-xs font-semibold text-white drop-shadow-sm flex items-center gap-1.5">
+                          <MapPin className="h-3.5 w-3.5 text-teal-300" />
+                          {lang === "bn"
+                            ? "ডিজিটাল ক্যাডাস্ট্রাল জরিপ ও ভূমি স্বত্ব ধারাবাহিকতা পর্যবেক্ষণ"
+                            : "Cadastral Survey & Ownership Chain Monitoring"}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </section>
 
@@ -1114,7 +1338,7 @@ export default function LandTraceClient({ initialParcels, initialSession }: Prop
                               setActiveTab("INVESTIGATION");
                             } else {
                               fillDemoCredentials("CITIZEN");
-                              setShowAuthModal("LOGIN");
+                              setActiveTab("LOGIN_CITIZEN");
                             }
                           }}
                           className="px-4 py-2 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-bold text-xs shadow-xs transition-all whitespace-nowrap self-end sm:self-auto"
@@ -1133,9 +1357,97 @@ export default function LandTraceClient({ initialParcels, initialSession }: Prop
               )}
             </section>
 
-            {/* 3. HOW IT WORKS SECTION */}
-            <section className="space-y-5">
+            {/* 3. SIX CORE PROTOTYPE FEATURES */}
+            <section id="services-section" className="space-y-6 pt-2">
+              <div className="text-center max-w-2xl mx-auto space-y-1.5">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-xs font-semibold">
+                  <Layers className="h-3.5 w-3.5 text-teal-700" />
+                  <span>{t.navServices}</span>
+                </div>
+                <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+                  {t.featuresSectionTitle}
+                </h2>
+                <p className="text-xs sm:text-sm text-slate-500 max-w-xl mx-auto leading-relaxed">
+                  {t.featuresSectionSubtitle}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {/* 1. ভূমি রেকর্ড অনুসন্ধান */}
+                <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-xs hover:border-teal-300 hover:shadow-sm transition-all space-y-3">
+                  <div className="h-10 w-10 rounded-xl bg-teal-50 text-teal-700 border border-teal-100 flex items-center justify-center">
+                    <Search className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900">{t.feat1Title}</h3>
+                    <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">{t.feat1Desc}</p>
+                  </div>
+                </div>
+
+                {/* 2. মালিকানার ধারাবাহিকতা যাচাই */}
+                <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-xs hover:border-teal-300 hover:shadow-sm transition-all space-y-3">
+                  <div className="h-10 w-10 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-100 flex items-center justify-center">
+                    <History className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900">{t.feat2Title}</h3>
+                    <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">{t.feat2Desc}</p>
+                  </div>
+                </div>
+
+                {/* 3. দলিল যাচাই */}
+                <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-xs hover:border-teal-300 hover:shadow-sm transition-all space-y-3">
+                  <div className="h-10 w-10 rounded-xl bg-teal-50 text-teal-700 border border-teal-100 flex items-center justify-center">
+                    <FileCheck2 className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900">{t.feat3Title}</h3>
+                    <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">{t.feat3Desc}</p>
+                  </div>
+                </div>
+
+                {/* 4. নামজারি রেকর্ডের সঙ্গে তুলনা */}
+                <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-xs hover:border-teal-300 hover:shadow-sm transition-all space-y-3">
+                  <div className="h-10 w-10 rounded-xl bg-teal-50 text-teal-700 border border-teal-100 flex items-center justify-center">
+                    <Layers className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900">{t.feat4Title}</h3>
+                    <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">{t.feat4Desc}</p>
+                  </div>
+                </div>
+
+                {/* 5. জমির পরিমাণের অমিল শনাক্তকরণ */}
+                <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-xs hover:border-teal-300 hover:shadow-sm transition-all space-y-3">
+                  <div className="h-10 w-10 rounded-xl bg-amber-50 text-amber-700 border border-amber-100 flex items-center justify-center">
+                    <Scale className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900">{t.feat5Title}</h3>
+                    <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">{t.feat5Desc}</p>
+                  </div>
+                </div>
+
+                {/* 6. তদন্ত প্রতিবেদন */}
+                <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-xs hover:border-teal-300 hover:shadow-sm transition-all space-y-3">
+                  <div className="h-10 w-10 rounded-xl bg-teal-50 text-teal-700 border border-teal-100 flex items-center justify-center">
+                    <FileText className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900">{t.feat6Title}</h3>
+                    <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">{t.feat6Desc}</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* 4. HOW IT WORKS / USER GUIDE SECTION */}
+            <section id="guide-section" className="space-y-5 pt-2">
               <div className="text-center max-w-xl mx-auto space-y-1">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-xs font-semibold">
+                  <BookOpen className="h-3.5 w-3.5 text-teal-700" />
+                  <span>{t.navGuide}</span>
+                </div>
                 <h2 className="text-lg sm:text-xl font-bold text-slate-900">
                   {t.homeHowItWorksTitle}
                 </h2>
@@ -1144,34 +1456,42 @@ export default function LandTraceClient({ initialParcels, initialSession }: Prop
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-sm space-y-2.5">
                   <div className="h-9 w-9 rounded-xl bg-teal-50 text-teal-700 border border-teal-200 flex items-center justify-center font-bold text-sm">
                     ১
                   </div>
-                  <h3 className="text-sm font-bold text-slate-900">{t.homeStep1Title}</h3>
-                  <p className="text-xs text-slate-600 leading-relaxed">{t.homeStep1Desc}</p>
+                  <h3 className="text-sm font-bold text-slate-900">{t.guideStep1Title}</h3>
+                  <p className="text-xs text-slate-600 leading-relaxed">{t.guideStep1Desc}</p>
                 </div>
 
                 <div className="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-sm space-y-2.5">
                   <div className="h-9 w-9 rounded-xl bg-teal-50 text-teal-700 border border-teal-200 flex items-center justify-center font-bold text-sm">
                     ২
                   </div>
-                  <h3 className="text-sm font-bold text-slate-900">{t.homeStep2Title}</h3>
-                  <p className="text-xs text-slate-600 leading-relaxed">{t.homeStep2Desc}</p>
+                  <h3 className="text-sm font-bold text-slate-900">{t.guideStep2Title}</h3>
+                  <p className="text-xs text-slate-600 leading-relaxed">{t.guideStep2Desc}</p>
                 </div>
 
                 <div className="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-sm space-y-2.5">
                   <div className="h-9 w-9 rounded-xl bg-teal-50 text-teal-700 border border-teal-200 flex items-center justify-center font-bold text-sm">
                     ৩
                   </div>
-                  <h3 className="text-sm font-bold text-slate-900">{t.homeStep3Title}</h3>
-                  <p className="text-xs text-slate-600 leading-relaxed">{t.homeStep3Desc}</p>
+                  <h3 className="text-sm font-bold text-slate-900">{t.guideStep3Title}</h3>
+                  <p className="text-xs text-slate-600 leading-relaxed">{t.guideStep3Desc}</p>
+                </div>
+
+                <div className="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-sm space-y-2.5">
+                  <div className="h-9 w-9 rounded-xl bg-teal-50 text-teal-700 border border-teal-200 flex items-center justify-center font-bold text-sm">
+                    ৪
+                  </div>
+                  <h3 className="text-sm font-bold text-slate-900">{t.guideStep4Title}</h3>
+                  <p className="text-xs text-slate-600 leading-relaxed">{t.guideStep4Desc}</p>
                 </div>
               </div>
             </section>
 
-            {/* 4. 5 DETECTION CAPABILITIES (P3 PROBLEM STATEMENT) */}
+            {/* 5. 5 DETECTION CAPABILITIES (P3 PROBLEM STATEMENT) */}
             <section className="space-y-5">
               <div className="text-center max-w-2xl mx-auto space-y-1">
                 <h2 className="text-lg sm:text-xl font-bold text-slate-900">
@@ -1256,7 +1576,7 @@ export default function LandTraceClient({ initialParcels, initialSession }: Prop
               </div>
             </section>
 
-            {/* 5. ROLE PORTALS / LOGIN ENTRY POINTS */}
+            {/* 6. ROLE PORTALS / LOGIN ENTRY POINTS */}
             <section id="portals-section" className="space-y-5">
               <div className="text-center max-w-xl mx-auto space-y-1">
                 <h2 className="text-lg sm:text-xl font-bold text-slate-900">
@@ -1280,11 +1600,13 @@ export default function LandTraceClient({ initialParcels, initialSession }: Prop
                   <button
                     onClick={() => {
                       fillDemoCredentials("CITIZEN");
-                      setShowAuthModal("LOGIN");
+                      setActiveTab("LOGIN_CITIZEN");
+                      window.scrollTo({ top: 0, behavior: "smooth" });
                     }}
-                    className="w-full py-2.5 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-bold text-xs shadow-xs transition-all text-center"
+                    className="w-full py-2.5 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-bold text-xs shadow-xs transition-all text-center flex items-center justify-center gap-1.5"
                   >
-                    {t.citizenPortalBtn}
+                    <span>{t.citizenPortalBtn}</span>
+                    <ArrowRight className="h-3.5 w-3.5" />
                   </button>
                 </div>
 
@@ -1300,11 +1622,13 @@ export default function LandTraceClient({ initialParcels, initialSession }: Prop
                   <button
                     onClick={() => {
                       fillDemoCredentials("OFFICIAL");
-                      setShowAuthModal("LOGIN");
+                      setActiveTab("LOGIN_OFFICIAL");
+                      window.scrollTo({ top: 0, behavior: "smooth" });
                     }}
-                    className="w-full py-2.5 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-bold text-xs shadow-xs transition-all text-center"
+                    className="w-full py-2.5 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-bold text-xs shadow-xs transition-all text-center flex items-center justify-center gap-1.5"
                   >
-                    {t.officerPortalBtn}
+                    <span>{t.officerPortalBtn}</span>
+                    <ArrowRight className="h-3.5 w-3.5" />
                   </button>
                 </div>
 
@@ -1320,17 +1644,74 @@ export default function LandTraceClient({ initialParcels, initialSession }: Prop
                   <button
                     onClick={() => {
                       fillDemoCredentials("ADMIN");
-                      setShowAuthModal("LOGIN");
+                      setActiveTab("LOGIN_ADMIN");
+                      window.scrollTo({ top: 0, behavior: "smooth" });
                     }}
-                    className="w-full py-2.5 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-bold text-xs shadow-xs transition-all text-center"
+                    className="w-full py-2.5 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-bold text-xs shadow-xs transition-all text-center flex items-center justify-center gap-1.5"
                   >
-                    {t.adminPortalBtn}
+                    <span>{t.adminPortalBtn}</span>
+                    <ArrowRight className="h-3.5 w-3.5" />
                   </button>
                 </div>
               </div>
             </section>
 
-            {/* 6. SYNTHETIC DEMO NOTICE */}
+            {/* 7. ABOUT PROJECT SECTION */}
+            <section id="about-section" className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/90 shadow-sm space-y-4">
+              <div className="flex items-center gap-2">
+                <div className="h-9 w-9 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center">
+                  <Info className="h-5 w-5" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold text-slate-900">{t.aboutTitle}</h2>
+                  <p className="text-xs text-slate-500">{t.aboutSubtitle}</p>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-slate-600 leading-relaxed pt-2">
+                <p>{t.aboutDesc1}</p>
+                <p>{t.aboutDesc2}</p>
+              </div>
+              <div className="p-3.5 bg-teal-50/60 rounded-xl border border-teal-200/80 text-xs text-teal-900">
+                {t.aboutPilotNotice}
+              </div>
+            </section>
+
+            {/* 8. CONTACT & TECHNICAL INFO SECTION */}
+            <section id="contact-section" className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/90 shadow-sm space-y-4">
+              <div className="flex items-center gap-2">
+                <div className="h-9 w-9 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center">
+                  <Phone className="h-5 w-5" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold text-slate-900">{t.contactTitle}</h2>
+                  <p className="text-xs text-slate-500">{t.contactSubtitle}</p>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs pt-1">
+                <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                  <span className="text-[11px] text-slate-400 block">{t.contactDevLabel}</span>
+                  <span className="font-bold text-slate-800 text-sm">{t.contactDevValue}</span>
+                </div>
+                <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                  <span className="text-[11px] text-slate-400 block">{t.contactGitLabel}</span>
+                  <a
+                    href="https://github.com/RafiulKabir0/landtrace"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-mono text-teal-700 hover:underline flex items-center gap-1 font-semibold"
+                  >
+                    <span>github.com/RafiulKabir0/landtrace</span>
+                    <ExternalLink className="h-3 w-3" />
+                  </a>
+                </div>
+                <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                  <span className="text-[11px] text-slate-400 block">{t.contactEventLabel}</span>
+                  <span className="font-bold text-slate-800">{t.contactEventValue}</span>
+                </div>
+              </div>
+            </section>
+
+            {/* 9. SYNTHETIC DEMO NOTICE & LEGAL BUFFER */}
             <section className="bg-amber-50/80 border border-amber-200 rounded-2xl p-5 text-xs text-amber-950 space-y-1.5">
               <div className="flex items-center gap-2 font-bold text-amber-900">
                 <Info className="h-4 w-4 text-amber-700 flex-shrink-0" />
@@ -1339,153 +1720,519 @@ export default function LandTraceClient({ initialParcels, initialSession }: Prop
               <p className="leading-relaxed">
                 {t.homeSyntheticBannerDesc}
               </p>
+              <p className="text-[11px] text-amber-800 pt-1 border-t border-amber-200/60">
+                {t.legalDisclaimer}
+              </p>
             </section>
           </div>
         )}
 
-        {/* TAB 1: SIMPLE, UNCLUTTERED MAIN DASHBOARD */}
-        {activeTab === "DASHBOARD" && (
-          <div className="space-y-6">
-            {/* Citizen Personalized Dashboard view if logged in as Citizen */}
-            {session?.role === "CITIZEN" && (
-              <div className="bg-white border border-teal-200/90 rounded-2xl p-5 shadow-sm space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
-                  <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center font-bold">
-                      <UserCheck className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <h3 className="text-base font-bold text-slate-900">
-                        {t.citizenWelcomeTitle}
-                      </h3>
-                      <p className="text-xs text-slate-500">
-                        {session.name} ({session.email}) • {t.citizenMyPlot}: <span className="font-mono font-bold text-teal-800">{session.permittedPlots}</span>
-                      </p>
-                    </div>
-                  </div>
-
-                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 w-fit">
-                    {lang === "bn" ? "১০০% বৈধ ও সক্রিয় স্থিতি" : "Active & Clean Status"}
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-                  <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
-                    <span className="text-[11px] text-slate-400 block">{lang === "bn" ? "অনুমোদিত রেকর্ড" : "Permitted Record"}</span>
-                    <span className="font-bold text-slate-800 text-sm font-mono">{session.permittedPlots}</span>
-                  </div>
-                  <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
-                    <span className="text-[11px] text-slate-400 block">{lang === "bn" ? "মালিকানার ধরন" : "Ownership Type"}</span>
-                    <span className="font-bold text-slate-800 text-sm">{lang === "bn" ? "একক স্বত্বাধিকারী" : "Sole Titleholder"}</span>
-                  </div>
-                  <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
-                    <span className="text-[11px] text-slate-400 block">{lang === "bn" ? "নিরাপত্তা স্থিতি" : "Security Status"}</span>
-                    <span className="font-bold text-emerald-700 text-sm">{lang === "bn" ? "দ্বৈত বিক্রয় বা ঝুঁকি নেই" : "No Contradictions"}</span>
-                  </div>
-                </div>
-
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-1 text-xs">
-                  <span className="text-slate-500 text-[11px]">
-                    {t.citizenAuthorizedNotice}
-                  </span>
-                  <div className="flex items-center gap-2 w-full sm:w-auto">
-                    <button
-                      onClick={() => {
-                        const targetParcel = accessibleParcels[0];
-                        if (targetParcel) {
-                          openInvestigationView(targetParcel.id);
-                        }
-                      }}
-                      className="px-4 py-2 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-bold text-xs shadow-xs transition-all flex items-center justify-center gap-1.5 w-full sm:w-auto"
-                    >
-                      <FileText className="h-3.5 w-3.5" />
-                      <span>{t.openDossierBtn}</span>
-                    </button>
-                    <button
-                      onClick={() => setActiveTab("TRANSFER_CHECK")}
-                      className="px-4 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs border border-slate-300 shadow-xs transition-all flex items-center justify-center gap-1.5 w-full sm:w-auto"
-                    >
-                      <FileCheck2 className="h-3.5 w-3.5 text-teal-700" />
-                      <span>{t.tabTransferCheck}</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* SEARCH AND PRIMARY ACTION BAR */}
-            <section className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-sm space-y-3">
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                <div className="relative flex-1">
-                  <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                  <input
-                    type="text"
-                    placeholder={t.searchPlaceholder}
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") handleVerifyRecord();
-                    }}
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-300 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:bg-white transition-all"
-                  />
-                </div>
-
-                {/* Primary Action Button: Verify Land Record */}
+        {/* LAYER 2: THREE DEDICATED ROLE-SPECIFIC LOGIN VIEWS */}
+        {(activeTab === "LOGIN_CITIZEN" ||
+          activeTab === "LOGIN_OFFICIAL" ||
+          activeTab === "LOGIN_ADMIN") && (
+          <div className="max-w-md mx-auto py-6 space-y-6">
+            <div className="bg-white rounded-3xl border border-slate-200/90 p-6 sm:p-8 shadow-sm space-y-5">
+              {/* Role Switcher Tabs within Login */}
+              <div className="grid grid-cols-3 gap-1 bg-slate-100 p-1 rounded-xl">
                 <button
-                  onClick={handleVerifyRecord}
-                  disabled={isVerifying}
-                  className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-teal-700 hover:bg-teal-800 text-white text-sm font-semibold shadow-sm transition-all disabled:opacity-50 whitespace-nowrap leading-normal"
+                  type="button"
+                  onClick={() => {
+                    fillDemoCredentials("CITIZEN");
+                    setActiveTab("LOGIN_CITIZEN");
+                  }}
+                  className={`py-2 px-2 text-xs font-semibold rounded-lg transition-all text-center flex items-center justify-center gap-1 ${
+                    activeTab === "LOGIN_CITIZEN"
+                      ? "bg-white text-teal-800 shadow-xs border border-slate-200 font-bold"
+                      : "text-slate-600 hover:text-slate-900"
+                  }`}
                 >
-                  {isVerifying ? (
-                    <RefreshCw className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <Sparkles className="h-4 w-4" />
-                  )}
-                  <span>{t.verifyBtn}</span>
+                  <UserCheck className="h-3.5 w-3.5" />
+                  <span>{lang === "bn" ? "নাগরিক" : "Citizen"}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    fillDemoCredentials("OFFICIAL");
+                    setActiveTab("LOGIN_OFFICIAL");
+                  }}
+                  className={`py-2 px-2 text-xs font-semibold rounded-lg transition-all text-center flex items-center justify-center gap-1 ${
+                    activeTab === "LOGIN_OFFICIAL"
+                      ? "bg-white text-teal-800 shadow-xs border border-slate-200 font-bold"
+                      : "text-slate-600 hover:text-slate-900"
+                  }`}
+                >
+                  <Building2 className="h-3.5 w-3.5" />
+                  <span>{lang === "bn" ? "কর্মকর্তা" : "Officer"}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    fillDemoCredentials("ADMIN");
+                    setActiveTab("LOGIN_ADMIN");
+                  }}
+                  className={`py-2 px-2 text-xs font-semibold rounded-lg transition-all text-center flex items-center justify-center gap-1 ${
+                    activeTab === "LOGIN_ADMIN"
+                      ? "bg-white text-teal-800 shadow-xs border border-slate-200 font-bold"
+                      : "text-slate-600 hover:text-slate-900"
+                  }`}
+                >
+                  <ShieldCheck className="h-3.5 w-3.5" />
+                  <span>{lang === "bn" ? "প্রশাসক" : "Admin"}</span>
                 </button>
               </div>
 
-              {/* Status Filters */}
-              <div className="flex items-center justify-between flex-wrap gap-2 pt-1 border-t border-slate-100 text-xs">
-                <div className="flex items-center gap-1.5 text-slate-500">
-                  <span className="font-medium text-slate-600">{t.filterLabel}</span>
-                  <button
-                    onClick={() => setStatusFilter("ALL")}
-                    className={`px-2.5 py-1 rounded-md font-medium transition-colors leading-normal ${
-                      statusFilter === "ALL"
-                        ? "bg-slate-200 text-slate-800 font-bold"
-                        : "text-slate-600 hover:bg-slate-100"
-                    }`}
-                  >
-                    {t.allFilter}
-                  </button>
-                  <button
-                    onClick={() => setStatusFilter("FLAGGED")}
-                    className={`px-2.5 py-1 rounded-md font-medium transition-colors leading-normal ${
-                      statusFilter === "FLAGGED"
-                        ? "bg-red-100 text-red-800 font-bold"
-                        : "text-slate-600 hover:bg-slate-100"
-                    }`}
-                  >
-                    {t.flaggedFilter}
-                  </button>
-                  <button
-                    onClick={() => setStatusFilter("ACTIVE")}
-                    className={`px-2.5 py-1 rounded-md font-medium transition-colors leading-normal ${
-                      statusFilter === "ACTIVE"
-                        ? "bg-emerald-100 text-emerald-800 font-bold"
-                        : "text-slate-600 hover:bg-slate-100"
-                    }`}
-                  >
-                    {t.cleanFilter}
-                  </button>
+              {/* Role Header */}
+              <div className="space-y-1.5 text-center">
+                <div className="h-12 w-12 rounded-2xl bg-teal-50 text-teal-700 border border-teal-200 mx-auto flex items-center justify-center shadow-xs">
+                  {activeTab === "LOGIN_CITIZEN" ? (
+                    <UserCheck className="h-6 w-6" />
+                  ) : activeTab === "LOGIN_OFFICIAL" ? (
+                    <Building2 className="h-6 w-6" />
+                  ) : (
+                    <ShieldCheck className="h-6 w-6" />
+                  )}
+                </div>
+                <h2 className="text-lg font-bold text-slate-900 pt-1">
+                  {activeTab === "LOGIN_CITIZEN"
+                    ? t.loginCitizenTitle
+                    : activeTab === "LOGIN_OFFICIAL"
+                    ? t.loginOfficialTitle
+                    : t.loginAdminTitle}
+                </h2>
+                <p className="text-xs text-slate-500 leading-relaxed max-w-sm mx-auto">
+                  {activeTab === "LOGIN_CITIZEN"
+                    ? t.loginCitizenSub
+                    : activeTab === "LOGIN_OFFICIAL"
+                    ? t.loginOfficialSub
+                    : t.loginAdminSub}
+                </p>
+              </div>
+
+              {/* Auth Error Banner */}
+              {authError && (
+                <div className="p-3 rounded-xl bg-red-50 text-red-800 text-xs border border-red-200 flex items-center gap-2">
+                  <AlertTriangle className="h-4 w-4 text-red-600 flex-shrink-0" />
+                  <span>{authError}</span>
+                </div>
+              )}
+
+              {/* Login Form */}
+              <form onSubmit={handleLoginSubmit} className="space-y-4">
+                <div>
+                  <label className="text-xs font-semibold text-slate-700 block mb-1">
+                    {t.emailLabel}
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    value={loginEmail}
+                    onChange={(e) => setLoginEmail(e.target.value)}
+                    placeholder={
+                      activeTab === "LOGIN_CITIZEN"
+                        ? "citizen@demo.landtrace.gov.bd"
+                        : activeTab === "LOGIN_OFFICIAL"
+                        ? "officer@demo.landtrace.gov.bd"
+                        : "admin@demo.landtrace.gov.bd"
+                    }
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600 focus:bg-white transition-all font-mono"
+                  />
                 </div>
 
-                <span className="text-slate-400 text-[11px]">
-                  {t.showingRecords(filteredParcels.length, accessibleParcels.length)}
-                </span>
+                <div>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="text-xs font-semibold text-slate-700 block">
+                      {t.passwordLabel}
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const targetRole =
+                          activeTab === "LOGIN_CITIZEN"
+                            ? "CITIZEN"
+                            : activeTab === "LOGIN_OFFICIAL"
+                            ? "OFFICIAL"
+                            : "ADMIN";
+                        fillDemoCredentials(targetRole);
+                      }}
+                      className="text-[11px] text-teal-700 hover:text-teal-900 font-medium hover:underline flex items-center gap-1"
+                    >
+                      <Sparkles className="h-3 w-3" />
+                      <span>{t.fillDemoCredentialsBtn}</span>
+                    </button>
+                  </div>
+                  <div className="relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      required
+                      value={loginPassword}
+                      onChange={(e) => setLoginPassword(e.target.value)}
+                      placeholder="••••••••••••"
+                      className="w-full px-3.5 py-2.5 pr-10 rounded-xl bg-slate-50 border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600 focus:bg-white transition-all font-mono"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
+                      aria-label={showPassword ? t.hidePasswordLabel : t.showPasswordLabel}
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full py-3 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-bold text-xs shadow-sm transition-all flex items-center justify-center gap-2"
+                >
+                  <LogIn className="h-4 w-4" />
+                  <span>{t.submitLogin}</span>
+                </button>
+
+                {/* Security & Server Role Guarantee Notice */}
+                <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-[11px] text-slate-600 leading-relaxed flex items-start gap-2">
+                  <Lock className="h-3.5 w-3.5 text-teal-700 mt-0.5 flex-shrink-0" />
+                  <span>
+                    {lang === "bn"
+                      ? "সার্ভার নিরাপত্তা নিশ্চয়তা: নির্বাচিত লগইন পৃষ্ঠা ব্যবহারকারীর ভূমিকা নির্ধারণ করে না। ডেটাবেজ ও সেশন টোকেনের মাধ্যমেই প্রবেশাধিকার ও পদমর্যাদা নিশ্চিত করা হয়।"
+                      : "Server Security Policy: The selected login portal does not confer roles. The user's role is strictly authenticated and validated by the backend server."}
+                  </span>
+                </div>
+
+                {/* Back to Home Link */}
+                <div className="pt-2 text-center">
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("HOME")}
+                    className="text-xs text-slate-500 hover:text-teal-800 font-semibold inline-flex items-center gap-1 hover:underline"
+                  >
+                    <ArrowLeft className="h-3.5 w-3.5" />
+                    <span>{t.backToHomeBtn}</span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 1: THREE SEPARATE ROLE DASHBOARDS */}
+        {activeTab === "DASHBOARD" && (
+          <div className="space-y-6">
+            {/* A. CITIZEN DASHBOARD (FOR CITIZEN ROLE) */}
+            {session?.role === "CITIZEN" ? (
+              <div className="space-y-6">
+                {/* Welcome & Status Card */}
+                <div className="bg-white border border-teal-200/90 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                    <div className="flex items-center gap-3.5">
+                      <div className="h-12 w-12 rounded-2xl bg-teal-50 text-teal-700 flex items-center justify-center font-bold shadow-xs">
+                        <UserCheck className="h-6 w-6" />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-bold text-slate-900">
+                          {t.citizenWelcomeTitle}
+                        </h3>
+                        <p className="text-xs text-slate-500 mt-0.5">
+                          {session.name} ({session.email}) • {session.designation || (lang === "bn" ? "নাগরিক আবেদনকারী" : "Citizen Applicant")}
+                        </p>
+                      </div>
+                    </div>
+
+                    <span className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 w-fit flex items-center gap-1.5">
+                      <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                      <span>{lang === "bn" ? "১০০% বৈধ ও সক্রিয় স্থিতি" : "Active & Clean Status"}</span>
+                    </span>
+                  </div>
+
+                  {/* Permitted Parcel Summary Card */}
+                  {accessibleParcels[0] && (
+                    <div className="p-5 rounded-2xl bg-slate-50/70 border border-slate-200 space-y-4">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div>
+                          <span className="text-[11px] font-bold uppercase tracking-wider text-teal-800 block">
+                            {t.citizenMyPlot}
+                          </span>
+                          <h4 className="text-base font-bold text-slate-900 font-mono mt-0.5">
+                            {accessibleParcels[0].parcelNumber}
+                            <span className="ml-2 text-xs font-semibold px-2 py-0.5 bg-slate-200 rounded text-slate-700 font-sans">
+                              {t.dagNumber}: {formatNumber(accessibleParcels[0].dagNumber || "402", lang)}
+                            </span>
+                          </h4>
+                          <p className="text-xs text-slate-500 mt-0.5">
+                            {accessibleParcels[0].mouza}, {accessibleParcels[0].upazila}, {accessibleParcels[0].district}
+                          </p>
+                        </div>
+
+                        <button
+                          onClick={() => openInvestigationView(accessibleParcels[0].id)}
+                          className="px-4 py-2.5 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-bold text-xs shadow-xs transition-all flex items-center justify-center gap-1.5 self-start sm:self-auto"
+                        >
+                          <FileText className="h-3.5 w-3.5" />
+                          <span>{t.openDossierBtn}</span>
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                        <div className="bg-white p-3 rounded-xl border border-slate-200">
+                          <span className="text-[10px] text-slate-400 block">{t.khatian}</span>
+                          <span className="font-bold text-slate-800 font-mono">{accessibleParcels[0].khatianNumber}</span>
+                        </div>
+                        <div className="bg-white p-3 rounded-xl border border-slate-200">
+                          <span className="text-[10px] text-slate-400 block">{t.surveyType}</span>
+                          <span className="font-bold text-teal-800">{accessibleParcels[0].surveyType || "RS"}</span>
+                        </div>
+                        <div className="bg-white p-3 rounded-xl border border-slate-200">
+                          <span className="text-[10px] text-slate-400 block">{t.totalArea}</span>
+                          <span className="font-bold text-slate-800">{formatArea(accessibleParcels[0].totalArea, lang)}</span>
+                        </div>
+                        <div className="bg-white p-3 rounded-xl border border-slate-200">
+                          <span className="text-[10px] text-slate-400 block">{t.currentOwner}</span>
+                          <span className="font-medium text-slate-800 truncate block">{accessibleParcels[0].currentOwner}</span>
+                        </div>
+                      </div>
+
+                      <div className="p-3.5 bg-emerald-50 rounded-xl border border-emerald-200/90 text-xs text-emerald-900 flex items-start gap-2">
+                        <CheckCircle2 className="h-4 w-4 text-emerald-700 mt-0.5 flex-shrink-0" />
+                        <span>
+                          {lang === "bn"
+                            ? "আপনার প্লটের মালিকানা চেইন সম্পূর্ণ অক্ষুণ্ণ রয়েছে। সাব-রেজিস্ট্রি দলিল ও সহকারী কমিশনার (ভূমি) অফিসের নামজারি রেকর্ডে কোনো ধরনের স্বত্ব বিরতি বা দ্বৈত বিক্রয়ের অসঙ্গতি পাওয়া যায়নি।"
+                            : "Your parcel title chain is fully intact. No double selling, ownership chain breaks, or deed-mutation discrepancies exist."}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Citizen Search within Permitted Plot */}
+                  <div className="p-5 rounded-2xl bg-white border border-slate-200 space-y-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+                      <Search className="h-3.5 w-3.5 text-teal-700" />
+                      <span>{lang === "bn" ? "অনুমোদিত রেকর্ড অনুসন্ধান" : "Search Permitted Records"}</span>
+                    </h4>
+                    <div className="relative">
+                      <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                      <input
+                        type="text"
+                        placeholder={lang === "bn" ? "দাগ নম্বর (যেমন: দাগ ৪০২) বা খতিয়ান দিয়ে খুঁজুন..." : "Search by Dag 402 or Khatian..."}
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-300 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:bg-white"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Pre-registration Simulator for Citizen */}
+                  <div className="p-5 rounded-2xl bg-slate-50/70 border border-slate-200 space-y-4">
+                    <div>
+                      <h4 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                        <FileCheck2 className="h-4 w-4 text-teal-700" />
+                        <span>{t.simTitle}</span>
+                      </h4>
+                      <p className="text-xs text-slate-500 mt-0.5">{t.simDesc}</p>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                      <div>
+                        <label className="font-semibold text-slate-600 block mb-1">{t.simSellerLabel}</label>
+                        <input
+                          type="text"
+                          placeholder={t.simSellerPlaceholder}
+                          value={simSeller}
+                          onChange={(e) => setSimSeller(e.target.value)}
+                          className="w-full px-3 py-2 rounded-xl bg-white border border-slate-300 text-xs focus:ring-2 focus:ring-teal-600 outline-none"
+                        />
+                      </div>
+                      <div>
+                        <label className="font-semibold text-slate-600 block mb-1">{t.simBuyerLabel}</label>
+                        <input
+                          type="text"
+                          placeholder={t.simBuyerPlaceholder}
+                          value={simBuyer}
+                          onChange={(e) => setSimBuyer(e.target.value)}
+                          className="w-full px-3 py-2 rounded-xl bg-white border border-slate-300 text-xs focus:ring-2 focus:ring-teal-600 outline-none"
+                        />
+                      </div>
+                      <div>
+                        <label className="font-semibold text-slate-600 block mb-1">{t.simAreaLabel}</label>
+                        <input
+                          type="number"
+                          step="0.1"
+                          value={simArea}
+                          onChange={(e) => setSimArea(parseFloat(e.target.value) || 0)}
+                          className="w-full px-3 py-2 rounded-xl bg-white border border-slate-300 text-xs focus:ring-2 focus:ring-teal-600 outline-none"
+                        />
+                      </div>
+                      <div>
+                        <label className="font-semibold text-slate-600 block mb-1">{t.simDateLabel}</label>
+                        <input
+                          type="date"
+                          value={simDate}
+                          onChange={(e) => setSimDate(e.target.value)}
+                          className="w-full px-3 py-2 rounded-xl bg-white border border-slate-300 text-xs focus:ring-2 focus:ring-teal-600 outline-none"
+                        />
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={runPreRegistrationCheck}
+                      className="px-5 py-2.5 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-bold text-xs shadow-xs transition-all"
+                    >
+                      {t.simTestBtn}
+                    </button>
+
+                    {simResult && simResult.tested && (
+                      <div
+                        className={`p-3.5 rounded-xl border text-xs space-y-1.5 ${
+                          simResult.pass
+                            ? "bg-emerald-50 text-emerald-900 border-emerald-200"
+                            : "bg-red-50 text-red-900 border-red-200"
+                        }`}
+                      >
+                        <div className="flex items-center gap-2 font-bold">
+                          {simResult.pass ? (
+                            <CheckCircle2 className="h-4 w-4 text-emerald-700 flex-shrink-0" />
+                          ) : (
+                            <AlertTriangle className="h-4 w-4 text-red-700 flex-shrink-0" />
+                          )}
+                          <span>{simResult.pass ? t.simPass : t.simFail}</span>
+                        </div>
+                        {!simResult.pass && (
+                          <ul className="list-disc pl-5 space-y-0.5">
+                            {simResult.reasons.map((r, i) => (
+                              <li key={i}>{r}</li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Citizen Security Buffer Notice */}
+                  <div className="p-3.5 bg-amber-50/80 rounded-xl border border-amber-200/90 text-xs text-amber-900 flex items-start gap-2">
+                    <Info className="h-4 w-4 text-amber-700 mt-0.5 flex-shrink-0" />
+                    <span className="leading-relaxed">{t.citizenAuthorizedNotice}</span>
+                  </div>
+                </div>
               </div>
-            </section>
+            ) : (
+              /* B. LAND OFFICIAL & ADMIN REVIEW DASHBOARD */
+              <div className="space-y-6">
+                {/* Official Dashboard Header */}
+                <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center font-bold">
+                      {session?.role === "ADMIN" ? (
+                        <ShieldCheck className="h-5 w-5" />
+                      ) : (
+                        <Building2 className="h-5 w-5" />
+                      )}
+                    </div>
+                    <div>
+                      <h3 className="text-base font-bold text-slate-900">
+                        {session?.role === "ADMIN"
+                          ? lang === "bn"
+                            ? "ভূমি মন্ত্রণালয় আইসিটি সেল — প্রশাসনিক পর্যালোচনা কন্ট্রোল"
+                            : "Ministry ICT Cell — Administrative Review Control"
+                          : lang === "bn"
+                          ? "সহকারী কমিশনার (ভূমি) ও সাব-রেজিস্ট্রার পর্যালোচনা ড্যাশবোর্ড"
+                          : "AC (Land) & Sub-Registrar Review Dashboard"}
+                      </h3>
+                      <p className="text-xs text-slate-500">
+                        {session?.name || "Official Guest"} • {session?.role === "ADMIN" ? t.roleAdmin : t.roleOfficial} • {session?.email || "officer@demo.landtrace.gov.bd"}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="px-2.5 py-1 rounded-md bg-teal-50 text-teal-800 border border-teal-200 text-xs font-semibold">
+                      {lang === "bn" ? "সম্পূর্ণ রেজিস্ট্রি এক্সেস (ALL)" : "Full Registry Access (ALL)"}
+                    </span>
+                    {session?.role === "ADMIN" && (
+                      <button
+                        onClick={() => setActiveTab("ADMIN")}
+                        className="px-3 py-1 rounded-md bg-slate-800 text-white text-xs font-semibold hover:bg-slate-900 transition-colors"
+                      >
+                        {t.tabAdmin} →
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* SEARCH AND PRIMARY ACTION BAR */}
+                <section className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-sm space-y-3">
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                    <div className="relative flex-1">
+                      <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                      <input
+                        type="text"
+                        placeholder={t.searchPlaceholder}
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") handleVerifyRecord();
+                        }}
+                        className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-300 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:bg-white transition-all"
+                      />
+                    </div>
+
+                    {/* Primary Action Button: Verify Land Record */}
+                    <button
+                      onClick={handleVerifyRecord}
+                      disabled={isVerifying}
+                      className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-teal-700 hover:bg-teal-800 text-white text-sm font-semibold shadow-sm transition-all disabled:opacity-50 whitespace-nowrap leading-normal"
+                    >
+                      {isVerifying ? (
+                        <RefreshCw className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Sparkles className="h-4 w-4" />
+                      )}
+                      <span>{t.verifyBtn}</span>
+                    </button>
+                  </div>
+
+                  {/* Status Filters */}
+                  <div className="flex items-center justify-between flex-wrap gap-2 pt-1 border-t border-slate-100 text-xs">
+                    <div className="flex items-center gap-1.5 text-slate-500">
+                      <span className="font-medium text-slate-600">{t.filterLabel}</span>
+                      <button
+                        onClick={() => setStatusFilter("ALL")}
+                        className={`px-2.5 py-1 rounded-md font-medium transition-colors leading-normal ${
+                          statusFilter === "ALL"
+                            ? "bg-slate-200 text-slate-800 font-bold"
+                            : "text-slate-600 hover:bg-slate-100"
+                        }`}
+                      >
+                        {t.allFilter}
+                      </button>
+                      <button
+                        onClick={() => setStatusFilter("FLAGGED")}
+                        className={`px-2.5 py-1 rounded-md font-medium transition-colors leading-normal ${
+                          statusFilter === "FLAGGED"
+                            ? "bg-red-100 text-red-800 font-bold"
+                            : "text-slate-600 hover:bg-slate-100"
+                        }`}
+                      >
+                        {t.flaggedFilter}
+                      </button>
+                      <button
+                        onClick={() => setStatusFilter("ACTIVE")}
+                        className={`px-2.5 py-1 rounded-md font-medium transition-colors leading-normal ${
+                          statusFilter === "ACTIVE"
+                            ? "bg-emerald-100 text-emerald-800 font-bold"
+                            : "text-slate-600 hover:bg-slate-100"
+                        }`}
+                      >
+                        {t.cleanFilter}
+                      </button>
+                    </div>
+
+                    <span className="text-slate-400 text-[11px]">
+                      {t.showingRecords(filteredParcels.length, accessibleParcels.length)}
+                    </span>
+                  </div>
+                </section>
 
             {/* Notification alert after verification */}
             {verifyNotice && (
@@ -1694,6 +2441,8 @@ export default function LandTraceClient({ initialParcels, initialSession }: Prop
             </section>
           </div>
         )}
+      </div>
+    )}
 
         {/* TAB 2: DEDICATED FORENSIC INVESTIGATION VIEW */}
         {activeTab === "INVESTIGATION" && selectedParcel && currentAudit && (
