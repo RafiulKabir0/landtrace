@@ -91,37 +91,37 @@ The database model (`prisma/schema.prisma`) represents:
 
 ---
 
-### Five-Layer User Experience Architecture
+### Five-Layer Multi-Page User Experience Architecture
 
-1. **Layer 1: Public Homepage (পাবলিক হোমপেজ)**
-   - First-time visitors immediately grasp the platform's purpose within 10–15 seconds.
-   - LandTrace branding, Problem P3 badge, and primary action: **“জমির রেকর্ড যাচাই করুন”**.
-   - **Public Quick Search**: Instant verification by Dag, Khatian, Mouza, or Deed with 6 sample query chips.
-   - Three-step verification process cards (Search → Title Chain Matching → Fraud Detection).
-   - Five compact P3 detection capability summary cards with automated test metrics (24/24 passing).
-   - Three Role Entry Portals (নাগরিক, ভূমি কর্মকর্তা, প্রশাসক) with 1-click test triggers.
-   - Synthetic demonstration data notice and government-service style 4-column footer.
+Inspired by the information architecture of official government portals (such as [land.gov.bd](https://land.gov.bd/)), LandTrace organizes features across dedicated, modular routes rather than a single congested page:
 
-2. **Layer 2: Authentication (নিরাপদ প্রবেশদ্বার)**
-   - Clear entry points: **নাগরিক লগইন**, **ভূমি কর্মকর্তা লগইন**, **প্রশাসক লগইন**.
-   - Role-switching demo credential auto-fill for evaluation speed.
-   - Password visibility control (`Eye` / `EyeOff` toggle).
-   - Public self-registration is strictly restricted to Citizen accounts on both client and server (`/api/auth/register`).
-   - Server-side HMAC-SHA256 session token cookies and bcrypt password hashing.
+1. **Layer 1: Public Homepage & Directory**
+   - `/`: Concise public landing page with land hero banner, primary CTAs (**"জমির রেকর্ড যাচাই করুন"** and **"সেবাসমূহ দেখুন"**), 5 detection capabilities summary, 4-step workflow, 3 role login portals, and legal disclaimers.
+   - `/services`: Comprehensive service directory with 6 distinct operational modules.
+   - `/services/[service]`: Dedicated deep-dive service documentation pages (e.g. `/services/double-selling`, `/services/chain-break`, `/services/area-mismatch`, `/services/deed-mutation`, `/services/transfer-timing`, `/services/pre-registration`).
+   - `/guide`: Citizen and land official step-by-step user guide and cadastral FAQ.
+   - `/about`: System mission, LandTech 2026 scope, architecture, and limitations.
+   - `/contact`: Verified lead developer credentials, feedback form, and official repository links.
 
-3. **Layer 3: Role-Based Dashboards (ভূমিকাভিত্তিক ড্যাশবোর্ড)**
-   - **Citizen (নাগরিক)**: Restricted strictly to designated parcel `PLOT-DH-1001` and the Pre-Registration Risk Check Simulator. Server-side API protection prevents unauthorized record access.
-   - **Land Official (ভূমি কর্মকর্তা)**: Complete registry search, forensic dossier inspection, and decision-support actions (Mark for Review, Field Inquiry, Investigation Notes, Forward to Higher Authority).
-   - **Administrator (সিস্টেম অ্যাডমিন)**: Account lifecycle management, role assignment, and security audit trail oversight.
+2. **Layer 2: Dedicated Authentication Portals**
+   - `/login/citizen`: Citizen portal with 1-click evaluation pre-fill credentials.
+   - `/login/official`: Land official (AC Land / Sub-Registrar) portal with 1-click evaluation credentials.
+   - `/login/admin`: System administrator portal with 1-click evaluation credentials.
+   - *Security Note*: Authentication uses signed HMAC-SHA256 session tokens and bcrypt password hashing. Login pages never bestow roles; permissions derive strictly from authenticated database records. Public self-registration is strictly restricted to Citizen accounts.
 
-4. **Layer 4: Land Record Verification & Forensic Investigation (রেকর্ড যাচাই ও তদন্ত)**
-   - **Survey Record History (CS, SA, RS, BS)**: Dedicated cadastral survey card with clear disclaimer: *Cadastral surveys recorded physical possession at the time of survey; they do not automatically prove continuous legal ownership title.*
-   - **Ownership Transfer Chain**: Distinct chronological chain of registered sale deeds, transfer acreages, and approved AC (Land) mutation orders.
-   - Real-time contradiction analysis across all five P3 algorithmic rules.
+3. **Layer 3: Role-Specific Protected Dashboards**
+   - `/citizen/dashboard`: Dedicated citizen workspace restricted strictly to designated holdings (e.g. `PLOT-DH-1001`), risk profile overview, and the interactive **রেজিস্ট্রেশন পূর্ববর্তী ঝুঁকি যাচাই** (Pre-Registration Transfer Risk Simulator).
+   - `/official/dashboard`: Land official workspace featuring live Neon database metrics, registry search, multi-filter controls, and parcel queue.
+   - `/admin/dashboard`: System administration portal featuring user management (`/api/admin/users`), live role assignment selectors, account activation toggles, and system health telemetry.
 
-5. **Layer 5: Reports & Decision-Support Audit History (তদন্ত রিপোর্ট ও অডিট ট্রেইল)**
-   - Printable official dossier with explicit area units (শতক/decimals) and survey provenance.
-   - Timestamped officer action trail stored in the prototype decision-support buffer.
+4. **Layer 4: Verification & Investigation Workspace**
+   - `/verify`: Dedicated record verification search engine with instant filters and quick demo query chips.
+   - `/verify/[recordId]`: Selected record view displaying complete cadastral particulars, historical survey provenance (CS, SA, RS, BS), registered transfer deeds, and real-time detection summary.
+   - `/investigations/[id]`: Forensic investigation dossier featuring topological risk scoring (0–100), detailed contradiction breakdowns, interactive ownership chain timeline, raw JSON evidence inspector, and the authorized officer action panel (`/api/officer/actions`).
+
+5. **Layer 5: Decision-Support Reports & Audit History**
+   - `/reports/[id]`: Official forensic investigation report formatted for `@media print` and PDF export, complete with official seals, QR verification placeholder, evidentiary citations, and signature blocks.
+   - Timestamped officer action trail stored transparently in the prototype decision-support buffer.
 
 ---
 

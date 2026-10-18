@@ -3,49 +3,55 @@
 
 ---
 
-### Segment 1: Introduction & System Identity (0:00 – 0:30)
-- **Visual**: Show LandTrace live at `https://landtrace.vercel.app` with the clean, professional white/slate-50 theme, government header, AC-Land badge, and Neon PostgreSQL chip.
-- **Action**: Point out that the interface defaults to **বাংলা (Bangla)** for field officers and citizens. Click the `বাংলা | English` toggle in the header to show instant bilingual switching, then return to Bangla.
+### Segment 1: Introduction & Multi-Page Government Architecture (0:00 – 0:35)
+- **Visual**: Show LandTrace live at `https://landtrace.vercel.app` with the clean, authoritative government-service aesthetic (white/slate-50 background, emerald/teal accents), government header, and Neon PostgreSQL indicator.
+- **Action**:
+  - Show that the entire website defaults to **বাংলা (Bangla)**. Click the compact `বাংলা | English` toggle in the navigation bar to demonstrate zero-lag language switching, then switch back to Bangla.
+  - Scroll down the public homepage (`/`) to highlight the two prominent actions: **"জমির রেকর্ড যাচাই করুন"** and **"সেবাসমূহ দেখুন"**, followed by the 5 P3 detection capabilities, the 4-step workflow, and the 3 distinct role entry portals.
 - **Narrator**:
-  > *"Welcome to LandTrace — an automated Ownership Chain Contradiction and Fraud Detection System built for LandTech 2026, Problem Statement P3. Land title disputes tie citizens in decades of civil litigation in Bangladesh due to departmental silos between Sub-Registry deeds and AC-Land mutation khatians. Today, we demonstrate how LandTrace unifies these records into an auditable title graph. Our application defaults to natural Bangla with an instant English toggle. All data displayed is 100% synthetic demonstration data."*
+  > *"Welcome to LandTrace — an automated Ownership Chain Contradiction and Fraud Detection System built for LandTech 2026, Problem Statement P3. In Bangladesh, land disputes generate protracted litigation because Sub-Registry deed archives and AC-Land mutation khatians operate in departmental silos. LandTrace addresses this through a dedicated, multi-page government service architecture inspired by land.gov.bd. The application defaults to natural Bangla with an instant English toggle. All records shown are 100% synthetic demonstration data."*
 
 ---
 
-### Segment 2: Simple Dashboard & Record Search (0:30 – 0:55)
-- **Visual**: Show the uncluttered main dashboard: search bar, primary action button (*"ভূমি রেকর্ড যাচাই করুন"*), summary metrics (Total, Clean, Flagged).
-- **Action**: Type `PLOT-DH-2045` or `Gulshan` in the search box and press Enter or click the verification button.
+### Segment 2: Services Directory & Record Verification (0:35 – 1:00)
+- **Visual**: Click **"সেবাসমূহ দেখুন"** to open `/services`, then click **"জমির রেকর্ড যাচাই করুন"** to open `/verify`.
+- **Action**:
+  - In `/verify`, demonstrate the unified cadastral search bar. Click the quick demo chip for **`PLOT-DH-2045`** (Gulshan, Dhaka) or type it in.
+  - Click on the record card to open the selected record view (`/verify/PLOT-DH-2045`), showing the complete cadastral particulars (Dag 1105, SA Survey, 15.0 decimals, Contested Owner, Co-owner shares).
+  - Note the clear distinction between historical survey records (CS, SA, RS, BS) and ownership transfer deeds.
 - **Narrator**:
-  > *"The main dashboard provides an uncluttered operational overview. We see verified summary metrics derived dynamically from our database. As an officer searches by Dag number, Khatian number, or Mouza, LandTrace instantly filters the registry and highlights compromised parcels. Let's inspect parcel PLOT-DH-2045 in Gulshan by clicking 'পূর্ণাঙ্গ তদন্ত রিপোর্ট ও ধারাবাহিকতা দেখুন'."*
+  > *"From our complete Services Directory at /services, officers or citizens navigate to the dedicated verification workspace at /verify. Searching by Dag, Khatian, or Mouza instantly retrieves verified synthetic parcels. Inspecting parcel PLOT-DH-2045 clearly separates physical survey records—CS, SA, RS, BS—from registered deeds of transfer, preventing the common mistake of treating possession surveys as continuous legal title."*
 
 ---
 
-### Segment 3: Dedicated Forensic Investigation Dossier & 5 Detection Rules (0:55 – 1:35)
-- **Visual**: The dedicated Investigation View opens with Cadastral Particulars (Dag 1105, SA Survey, 15.0 decimals, Contested Owner, Co-owner shares).
+### Segment 3: Dedicated Forensic Investigation & 5 Detection Rules (1:00 – 1:40)
+- **Visual**: Click **"পূর্ণাঙ্গ তদন্ত ডসিয়ার দেখুন"** to navigate to `/investigations/PLOT-DH-2045`.
 - **Action**:
   - Point to the **Decision-Support Risk Score: 85/100 (Critical Risk)**.
   - Show the **Double Selling** anomaly explanation: what contradiction was detected, synthetic deeds involved, why triggered, and the **Recommended Human Review Action** (*উপজেলা সাব-রেজিস্ট্রারের তল্লাশ বালাম ও সরেজমিন দখল অনুসন্ধানের নির্দেশ দিন*).
-  - Scroll down to the interactive **Chain of Title Timeline**: contrast verified deed nodes with the red compromised node where Abdur Rashid alienated title twice without legitimate reacquisition.
-  - Point to the **Area Comparison** section showing survey khatian acreage vs. deed acreage.
+  - Scroll down to the interactive **Chain of Title Timeline**: contrast verified deed nodes with the red compromised node where grantor Abdur Rashid alienated title in 2018, and then executed a second sale in 2021 without title.
+  - Point to the **Area Comparison** section and the JSON forensic evidence inspector.
 - **Narrator**:
-  > *"In this dedicated investigation view, LandTrace analyzes the parcel across all five P3 detection rules: Double Selling, Ownership Chain Breaks, Area Mismatches, Deed-Mutation Mismatches, and Timing Anomalies. Here, the engine flags a critical Double Selling contradiction: grantor Abdur Rashid alienated 15.0 decimals in 2018, and then executed a second sale in 2021 without title. Notice the explicit recommended action guiding the officer to inspect the registry volume and physical possession. The timeline visually pinpoints the contradictory deed node."*
+  > *"The dedicated investigation view at /investigations analyzes the parcel across all five P3 detection rules: Double Selling, Ownership Chain Breaks, Area Mismatches, Deed-Mutation Mismatches, and Suspicious Transfer Timing. Here, our engine flags a critical Double Selling contradiction: grantor Abdur Rashid alienated 15.0 decimals in 2018, and executed an unauthorized secondary sale in 2021. Notice the actionable recommendation guiding the officer to inspect registry volumes and physical possession, backed by our interactive title timeline and raw forensic parameters."*
 
 ---
 
-### Segment 4: Officer Decision Actions & Dossier Export (1:35 – 2:00)
-- **Visual**: Scroll to the Authorized Officer Actions panel.
+### Segment 4: Officer Decision Actions & Official Printable Dossier (1:40 – 2:05)
+- **Visual**: Scroll to the Authorized Officer Actions panel on `/investigations/PLOT-DH-2045`.
 - **Action**:
-  - Click *"মাঠ তদন্তে প্রেরণ"* (Send for Field Inquiry). Show the immediate feedback banner confirming action was recorded in the prototype decision buffer.
-  - Click *"তদন্ত নোট যোগ করুন"* (Add Note) and type: *"সরেজমিন দখলদারিত্ব অনুসন্ধানের জন্য কানুনগোকে নির্দেশ প্রদান করা হলো"*. Save the note and show it appearing in the recent action trail.
-  - Click *"তদন্ত সারাংশ মুদ্রণ"* (Print Dossier) to display the official printable dossier modal, ready for AC-Land review.
+  - Click **"মাঠ তদন্তে প্রেরণ"** (Send for Field Inquiry). Point out the feedback banner confirming the action was stored in the prototype decision buffer.
+  - Click **"তদন্ত নোট যোগ করুন"** (Add Note) and save a note: *"সরেজমিন দখলদারিত্ব অনুসন্ধানের জন্য কানুনগোকে নির্দেশ প্রদান করা হলো"*.
+  - Click **"অফিসিয়াল রিপোর্ট দেখুন"** to open `/reports/PLOT-DH-2045`, displaying the complete printable forensic dossier with official seals, QR verification placeholder, and signature blocks. Press `Ctrl + P` to show the print preview.
 - **Narrator**:
-  > *"Every action button is fully functional. Officers can mark parcels for review, assign field inquiries to Kanungos, and record persistent investigation notes. Notice our transparent disclaimer: all actions are recorded in the prototype decision buffer rather than falsely claimed as transmitted to live government servers. Officers can also export or print the full forensic dossier with one click."*
+  > *"Every officer action is fully functional. Land officers can mark parcels for review, assign field inquiries to Kanungos, and record persistent notes. Transparent disclaimers confirm actions are preserved within the prototype decision buffer rather than claimed as live government transmissions. Officers can then navigate to /reports to review or print an official, forensic investigation dossier with complete evidentiary citations."*
 
 ---
 
-### Segment 5: Pre-Registration Risk Check & 1-Click Role Switcher (2:00 – 2:30)
-- **Visual**:
-  - Click the **"রেজিস্ট্রেশন পূর্ববর্তী ঝুঁকি যাচাই"** tab. Select `PLOT-SYL-5501` (Sylhet), enter seller `Enamul Haque`, and click *"হস্তান্তর ঝুঁকি নিরীক্ষা করুন"*. Show the red warning flagging an **Ownership Chain Break** (seller does not exist in prior title history).
-  - Use the **1-Click Demo Role Switcher** on the top header to switch to **"নাগরিক ডেমো (Citizen)"**. Show that the dashboard immediately adapts to citizen mode: restricting access to only permitted citizen records and disabling administrative officer actions.
-  - Click **"সিস্টেম অ্যাডমিন ডেমো (Admin)"** to reveal the **ব্যবহারকারী ও নিরাপত্তা ব্যবস্থাপনা (User Management)** tab.
+### Segment 5: Multi-Role Portals & Pre-Registration Risk Check (2:05 – 2:35)
+- **Visual**: Show the three dedicated login entry points: `/login/citizen`, `/login/official`, and `/login/admin`.
+- **Action**:
+  - Log in via `/login/citizen` using the 1-click test button. Show the dedicated **নাগরিক ড্যাশবোর্ড** (`/citizen/dashboard`), restricted strictly to designated plot `PLOT-DH-1001` and the **রেজিস্ট্রেশন পূর্ববর্তী ঝুঁকি যাচাই** (Pre-Registration Transfer Risk Simulator).
+  - Test the simulator with parcel `PLOT-SYL-5501` and seller `Enamul Haque` to trigger a simulated Ownership Chain Break warning.
+  - Log in via `/login/admin` to display the **প্রশাসক ড্যাশবোর্ড** (`/admin/dashboard`) with live account management, role assignment selectors, and system telemetry.
 - **Narrator**:
-  > *"Sub-Registrars can also prevent fraudulent conveyances before deed execution using our Pre-Registration Risk Check, detecting chain breaks before registry fees are paid. Finally, LandTrace features robust role-based access control. Evaluators can switch in one click between Citizen, Land Official, and Administrator modes to observe strict server-side authorization boundaries. By uniting cadastral surveys with digital registry chains, LandTrace establishes transparent, fraud-resilient land governance for Bangladesh. Thank you."*
+  > *"LandTrace strictly enforces multi-role security across dedicated routes: /login/citizen, /login/official, and /login/admin. Citizens access /citizen/dashboard to verify permitted holdings and test proposed deeds in our Pre-Registration Risk Simulator before paying stamp duty. Administrators access /admin/dashboard to manage accounts and enforce role permissions. By unifying cadastral surveys with digital title graphs in an accessible, layer-by-layer architecture, LandTrace provides transparent, fraud-resilient land governance for Bangladesh. Thank you."*
